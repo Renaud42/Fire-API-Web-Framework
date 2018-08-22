@@ -22,9 +22,16 @@
   SOFTWARE.
 */
 
-
+/**************************************/
+/*             FONT UTILS             */
+/**************************************/
 /* Importing font from Google Fonts */
 @import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+
+/**************************************/
+/*            WEBKIT UTILS            */
+/**************************************/
 
 /* Occurs when selecting text in the browser */
 ::selection {
@@ -37,14 +44,29 @@
   background-color: rgba(30, 144, 255, 0.3);
 }
 
-/* HTML set default font to Ubuntu */
-html {
-  font-family: 'Ubuntu', sans-serif;
-}
+
+/**************************************/
+/*            CURSOR UTILS            */
+/**************************************/
 
 /* For showing help cursor anywhere */
 .help-cursor:hover {
   cursor: help;
+}
+
+
+/**************************************/
+/* CUSTOMIZED DEFAULT HTML COMPONENTS */
+/**************************************/
+
+/* Set default font for all elements to Ubuntu */
+* {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* Hypertext link Anchor HTML tag */
+a {
+  transition: 0.15s linear;
 }
 
 /* Abbreviation HTML tag */
@@ -55,13 +77,42 @@ abbr {
   text-transform: uppercase;
 }
 
+/* Button HTML tag */
+button {
+  transition: 0.15s linear;
+}
+
+/* HTML heading tags */
+h1 {
+  font-size: 250%;
+  text-transform: uppercase;
+}
+h2 {
+  font-size: 200%;
+}
+h3 {
+  font-size: 160%;
+}
+h4 {
+  font-size: 140%;
+}
+h5, h6 {
+  font-size: 120%;
+  font-weight: normal;
+}
+
+
+/**************************************/
+/*      FIRE-API WEB COMPONENTS       */
+/**************************************/
+
 /* Hyperlink texts */
-.hypertext {
+/*.hypertext {
   display: inline;
   overflow: hidden;
   position: relative;
 }
-/* .hypertext:after {
+.hypertext:after {
   background: var(underline-color);
   bottom: -1px;
   content: "";
