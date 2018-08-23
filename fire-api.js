@@ -81,3 +81,22 @@ function copyToClipboard(text) {
     fallbackCopyTextToClipboard(text);
   });
 }
+
+// Closing alert boxes
+var close = document.getElementsByClassName("alert-close");
+var i;
+// Loop all buttons
+for(i = 0; i < close.length; i++) {
+    // On click on a close button
+    close[i].onclick = function() {
+        // Getting parent element
+        var div = this.parentElement;
+
+        // Setting opacity to 0
+        div.style.opacity = "0";
+
+        setTimeout(function() {
+          div.style.display = "none";
+        }, 300);
+    }
+}
