@@ -62,6 +62,7 @@
 /* Set default font for all elements to Ubuntu */
 * {
   font-family: 'Ubuntu', sans-serif;
+  position: relative;
 }
 
 /* Hypertext link Anchor HTML tag */
@@ -177,6 +178,11 @@ pre {
 }
 .dark-black {
   background: #212121;
+}
+
+/* Fix for text commonly used HTML tags */
+h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-"], h5[class^="light-"], h6[class^="light-"], a[class^="light-"], p[class^="light-"], h1[class^="dark-"], h2[class^="dark-"], h3[class^="dark-"], h4[class^="dark-"], h5[class^="dark-"], h6[class^="dark-"], a[class^="dark-"], p[class^="dark-"] {
+  background: transparent;
 }
 
 
@@ -402,32 +408,224 @@ pre {
   font-weight: bold;
 }
 
+/* Badges */
+.badge {
+  border-radius: 5%;
+  font-size: 60%;
+  margin-left: 14px;
+  margin-bottom: 100%;
+  padding: 0.25%;
+  top: -5px;
+}
+
+/* Buttons */
+.button {
+  border: 0px;
+  border-radius: 5%;
+  cursor: pointer;
+  font-size: 120%;
+  margin: 8px;
+  padding: 0.4% 0.75% 0.4% 0.75%;
+  position: sticky;
+  transition: * 0.4s linear;
+  -moz-transition: * 0.4s linear;
+  -webkit-transition: * 0.4s linear;
+}
+.button.animated-button:active {
+  animation-name: push;
+  animation-duration: 500s;
+}
+[class^="light-"].button:hover {
+  background: whitesmoke;
+}
+[class^="light-"].button:active {
+  background: #dddddd;
+}
+.dark-black.button:hover {
+  background: #505050;
+}
+.dark-black.button:active {
+  background: #393939;
+}
+.dark-blue.button:hover {
+  background: #2196f3;
+}
+.dark-blue.button:active {
+  background: #1565c0;
+}
+.dark-green.button:hover {
+  background: #4caf50;
+}
+.dark-green.button:active {
+  background: #2e7d32;
+}
+.dark-red.button:hover {
+  background: #f44336;
+}
+.dark-red.button:active {
+  background: #b71c1c;
+}
+.dark-yellow.button:hover {
+  background: #ffd54f;
+}
+.dark-yellow.button:active {
+  background: #ffa000;
+}
+
 /* Hyperlink texts */
-/*.hypertext {
+:root {
+  --underline-color: #000000;
+}
+.light-black.hypertext, .light-black.hypertext-thin {
+  --underline-color: #212121;
+}
+.light-blue.hypertext, .light-blue.hypertext-thin {
+  --underline-color: #1976d2;
+}
+.light-green.hypertext, .light-green.hypertext-thin {
+  --underline-color: #388e3c;
+}
+.light-red.hypertext, .light-red.hypertext-thin {
+  --underline-color: #d32f2f;
+}
+.light-yellow.hypertext, .light-yellow.hypertext-thin {
+  --underline-color: #fbc02d;
+}
+[class^="dark-"].hypertext, [class^="dark-"].hypertext-thin {
+  --underline-color: white;
+}
+.hypertext, .hypertext-thin {
+  cursor: pointer;
   display: inline;
   overflow: hidden;
   position: relative;
+  text-decoration: none;
 }
-.hypertext:after {
-  background: var(underline-color);
+.hypertext:after, .hypertext-thin:after {
+  background: var(--underline-color);
   bottom: -1px;
   content: "";
   height: 2px;
   position: absolute;
-  z-index: -1;
   right: 0;
+  transition: width 0.3s ease-out;
   width: 0;
-  transition-property: width;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-out;
+  z-index: -1;
 }
-.hypertext:hover:after, .hypertext:focus:after, .hypertext:active:after {
+.hypertext:after {
+  height: 2px;
+}
+.hypertext-thin:after {
+  height: 1px;
+}
+.hypertext:hover:after, .hypertext:focus:after, .hypertext:active:after, .hypertext-thin:hover:after, .hypertext-thin:focus:after, .hypertext-thin:active:after {
   left: 0;
   right: auto;
   width: 100%;
-} */
+}
+
+/* Sliders */
+:root {
+  --arrow-next-color: white;
+  --arrow-next-hover-color: #aaaaaa;
+  --arrow-previous-color: white;
+  --arrow-previous-hover-color: #aaaaaa;
+}
+.slider-item {
+  display: none
+}
+.slider-item img {
+  width: 100%;
+}
+.slider {
+  margin: auto;
+  position: relative;
+  width: 80%;
+}
+.slider-previous, .slider-next {
+  border-radius: 0 3px 3px 0;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: -22px;
+  padding: 16px;
+  position: absolute;
+  top: 50%;
+  transition: 0.5s ease;
+  width: auto;
+}
+.slider-next {
+  color: var(--arrow-next-color);
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+.slider-previous {
+  color: var(--arrow-previous-color);
+}
+.slider-previous:hover {
+  color: var(--arrow-previous-hover-color);
+}
+.slider-next:hover {
+  color: var(--arrow-next-hover-color);
+}
+.slider-caption {
+  bottom: 8px;
+  color: white;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  text-align: center;
+  width: 97.5%;
+}
+.slider-dot {
+  background-color: #bbb;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-block;
+  height: 15px;
+  margin: 0 2px;
+  transition: background-color 0.5s ease;
+  width: 15px;
+}
+.slider-dots {
+  text-align: center;
+}
+.slider-active, .slider-dot:hover {
+  background-color: #717171;
+}
+.slider-animated {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1s;
+  animation-name: fade;
+  animation-duration: 1s;
+}
+.slider-buttons-animated:hover {
+  font-size: 22px;
+  margin-top: -24px;
+}
+@media only screen and (max-width: 560px) {
+  .slider-previous, .slider-next, .slider-caption {
+    font-size: 11px
+  }
+}
+
+/* Dropdowns */
+
+
 
 /* Components animations */
+@-webkit-keyframes fadeSlider {
+  from {opacity: .2}
+  to {opacity: 1}
+}
+@-moz-keyframes fadeSlider {
+  from {opacity: .2}
+  to {opacity: 1}
+}
+@keyframes fade {
+  from {opacity: .2}
+  to {opacity: 1}
+}
 @-webkit-keyframes pop-in {
   0% { opacity: 0.8; -webkit-transform: scale(0); }
   65% { opacity: 1; -webkit-transform: scale(1.04); }
@@ -442,6 +640,21 @@ pre {
   0% { opacity: 0.8; transform: scale(0); }
   65% { opacity: 1; transform: scale(1.04); }
   100% { opacity: 1; transform: scale(1); }
+}
+@-webkit-keyframes push {
+  0% { opacity: 1; -webkit-transform: scale(1); }
+  0.1% { opacity: 1; -webkit-transform: scale(0.75); }
+  100% { opacity: 1; -webkit-transform: scale(0.75); }
+}
+@-moz-keyframes push {
+  0% { opacity: 1; -webkit-transform: scale(1); }
+  0.1% { opacity: 1; -webkit-transform: scale(0.75); }
+  100% { opacity: 1; -webkit-transform: scale(0.75); }
+}
+@keyframes push {
+  0% { opacity: 1; -webkit-transform: scale(1); }
+  0.1% { opacity: 1; -webkit-transform: scale(0.75); }
+  100% { opacity: 1; -webkit-transform: scale(0.75); }
 }
 
 /* Text animations */
