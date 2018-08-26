@@ -418,8 +418,8 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   top: -5px;
 }
 
-/* Buttons */
-.button {
+/* Buttons and dropdowns */
+.button, .dropdown {
   border: 0px;
   border-radius: 5%;
   cursor: pointer;
@@ -431,45 +431,51 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   -moz-transition: * 0.4s linear;
   -webkit-transition: * 0.4s linear;
 }
-.button.animated-button:active {
+.button.animated-button:active, .dropdown.animated-dropdown:active {
   animation-name: push;
   animation-duration: 500s;
 }
-[class^="light-"].button:hover {
+[class^="light-"].button:hover, [class^="light-"].dropdown:hover {
   background: whitesmoke;
 }
-[class^="light-"].button:active {
+[class^="light-"].button:active, [class^="light-"].dropdown:active {
   background: #dddddd;
 }
-.dark-black.button:hover {
+.dark-black.button:hover, .dark-black.dropdown:hover {
   background: #505050;
 }
-.dark-black.button:active {
+.dark-black.button:active, .dark-black.dropdown:active {
   background: #393939;
 }
-.dark-blue.button:hover {
+.dark-blue.button:hover, .dark-blue.dropdown:hover {
   background: #2196f3;
 }
-.dark-blue.button:active {
+.dark-blue.button:active, .dark-blue.dropdown:active {
   background: #1565c0;
 }
-.dark-green.button:hover {
+.dark-green.button:hover, .dark-green.dropdown:hover {
   background: #4caf50;
 }
-.dark-green.button:active {
+.dark-green.button:active, .dark-green.dropdown:active {
   background: #2e7d32;
 }
-.dark-red.button:hover {
+.dark-red.button:hover, .dark-red.dropdown:hover {
   background: #f44336;
 }
-.dark-red.button:active {
+.dark-red.button:active, .dark-red.dropdown:active {
   background: #b71c1c;
 }
-.dark-yellow.button:hover {
+.dark-yellow.button:hover, .dark-yellow.dropdown:hover {
   background: #ffd54f;
 }
-.dark-yellow.button:active {
+.dark-yellow.button:active, .dark-yellow.dropdown:active {
   background: #ffa000;
+}
+.dropdown-click {
+  
+}
+.dropdown-hover {
+
 }
 
 /* Hyperlink texts */
@@ -609,8 +615,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   }
 }
 
-/* Dropdowns */
-
+/* Forms utils */
 
 
 /* Components animations */
