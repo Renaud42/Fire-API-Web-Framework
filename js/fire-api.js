@@ -87,18 +87,37 @@ var close = document.getElementsByClassName("alert-close");
 var i;
 // Loop all buttons
 for(i = 0; i < close.length; i++) {
-    // On click on a close button
-    close[i].onclick = function() {
-        // Getting parent element
-        var div = this.parentElement;
+  // On click on a close button
+  close[i].onclick = function() {
+    // Getting parent element
+    var div = this.parentElement;
 
-        // Setting opacity to 0
-        div.style.opacity = "0";
+    // Setting opacity to 0
+    div.style.opacity = "0";
 
-        setTimeout(function() {
-          div.style.display = "none";
-        }, 300);
+    setTimeout(function() {
+      div.style.display = "none";
+    }, 300);
+  }
+}
+
+// Dropdowns
+function dropdown(dropdownId) {
+  // Get the specified dropdown and showing it
+  document.getElementById(dropdownId).classList.toggle('dropdown-show');
+}
+// Closing dropdown if we click outside of it
+window.onclick = function(event) {
+  if(!event.target.matches('.dropdown-button')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for(i = 0; i < dropdowns.length; i++) {
+      var openedDropdowns = dropdowns[i];
+      if(openedDropdowns.classList.contains('dropdown-show')) {
+        openedDropdowns.classList.remove('dropdown-show');
+      }
     }
+  }
 }
 
 // Sliders
@@ -114,16 +133,16 @@ function showSlides(n) {
   var i;
   var slides = document.getElementsByClassName("slider-item");
   var dots = document.getElementsByClassName("slider-dot");
-  if (n > slides.length) {
+  if(n > slides.length) {
     slideIndex = 1
   }
-  if (n < 1) {
+  if(n < 1) {
     slideIndex = slides.length
   }
-  for (i = 0; i < slides.length; i++) {
+  for(i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
+  for(i = 0; i < dots.length; i++) {
       dots[i].className = dots[i].className.replace(" slider-active", "");
   }
   slides[slideIndex-1].style.display = "block";

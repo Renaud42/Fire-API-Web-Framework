@@ -419,10 +419,15 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 }
 
 /* Buttons and dropdowns */
+:root {
+  --dropdown-content-width: 90%;
+}
+.button {
+  cursor: pointer;
+}
 .button, .dropdown {
   border: 0px;
   border-radius: 5%;
-  cursor: pointer;
   font-size: 120%;
   margin: 8px;
   padding: 0.4% 0.75% 0.4% 0.75%;
@@ -471,11 +476,39 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 .dark-yellow.button:active, .dark-yellow.dropdown:active {
   background: #ffa000;
 }
-.dropdown-click {
-  
+.dropdown {
+  margin-bottom: 0px !important;
 }
-.dropdown-hover {
-
+.dropdown button {
+  margin-bottom: 0px !important;
+}
+.dropdown-content {
+  display: none;
+  float: left;
+  max-width: 100%;
+  position: absolute;
+  transition: display 0.2s linear;
+  z-index: 1;
+}
+.dropdown-content button:first-of-type {
+  margin-top: -2px !important;
+}
+.dropdown-content button:last-of-type {
+  border-radius: 0px 0px 5% 5%;
+}
+.dropdown-content button {
+  border-radius: 0px;
+  display: block;
+  margin: inherit;
+  margin-left: 8px;
+  margin-bottom: 0px !important;
+  margin-top: 0px;
+  padding: inherit;
+  width: var(--dropdown-content-width);
+  word-wrap: break-word;
+}
+.dropdown-show {
+  display: block;
 }
 
 /* Hyperlink texts */
@@ -557,7 +590,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   padding: 16px;
   position: absolute;
   top: 50%;
-  transition: 0.5s ease;
+  transition: 0.3s ease;
   width: auto;
 }
 .slider-next {
@@ -581,7 +614,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   padding: 8px 12px;
   position: absolute;
   text-align: center;
-  width: 97.5%;
+  width: 98.5%;
 }
 .slider-dot {
   background-color: #bbb;
@@ -616,6 +649,9 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 }
 
 /* Forms utils */
+
+
+/* Syntaxic coloration */
 
 
 /* Components animations */
