@@ -128,41 +128,53 @@ pre {
 }
 .light-blue {
   color: #1976d2;
+  --underline-color: #1976d2;
 }
 .light-green {
   color: #388e3c;
+  --underline-color: #388e3c;
 }
 .light-red {
   color: #d32f2f;
+  --underline-color: #d32f2f;
 }
 .light-yellow {
   color: #fbc02d;
+  --underline-color: #fbc02d;
 }
 .light-black {
   color: #212121;
+  --underline-color: #212121;
 }
 .light-blue * {
   color: #1976d2;
+  --underline-color: #1976d2;
 }
 .light-green * {
   color: #388e3c;
+  --underline-color: #388e3c;
 }
 .light-red * {
   color: #d32f2f;
+  --underline-color: #d32f2f;
 }
 .light-yellow * {
   color: #fbc02d;
+  --underline-color: #fbc02d;
 }
 .light-black * {
   color: #212121;
+  --underline-color: #212121;
 }
 
 /* Dark theme */
 [class^="dark-"] {
   color: white;
+  --underline-color: white;
 }
 [class^="dark-"] * {
   color: white;
+  --underline-color: white;
 }
 .dark-blue {
   background: #1976d2;
@@ -515,24 +527,6 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 :root {
   --underline-color: #000000;
 }
-.light-black.hypertext, .light-black.hypertext-thin {
-  --underline-color: #212121;
-}
-.light-blue.hypertext, .light-blue.hypertext-thin {
-  --underline-color: #1976d2;
-}
-.light-green.hypertext, .light-green.hypertext-thin {
-  --underline-color: #388e3c;
-}
-.light-red.hypertext, .light-red.hypertext-thin {
-  --underline-color: #d32f2f;
-}
-.light-yellow.hypertext, .light-yellow.hypertext-thin {
-  --underline-color: #fbc02d;
-}
-[class^="dark-"].hypertext, [class^="dark-"].hypertext-thin {
-  --underline-color: white;
-}
 .hypertext, .hypertext-thin {
   cursor: pointer;
   display: inline;
@@ -648,10 +642,50 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   }
 }
 
-/* Forms utils */
+/* Inputs */
+input[type=text].text-input {
+  border: 0px;
+  border-radius: 5%;
+  display: inline;
+  font-size: 20px;
+  overflow: hidden;
+  padding: 8px;
+  position: relative;
+}
+input[type=text].text-input:after {
+  background: var(--underline-color);
+  bottom: -1px;
+  content: "";
+  height: 2px;
+  position: absolute;
+  right: 0;
+  transition: width 0.3s ease-out;
+  width: 0;
+  z-index: -1;
+}
+input[type=text].text-input:focus:after, input[type=text].text-input:active:after {
+  left: 0;
+  right: auto;
+  width: 100%;
+}
+
+
+/* Modal */
+
+
+/* Progresses */
+
+
+/* Tooltips */
 
 
 /* Syntaxic coloration */
+
+
+/* Icon lib */
+
+
+/* Social networks badges */
 
 
 /* Components animations */
