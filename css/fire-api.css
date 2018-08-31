@@ -422,7 +422,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 
 /* Badges */
 .badge {
-  border-radius: 5%;
+  border-radius: 5px;
   font-size: 60%;
   margin-left: 14px;
   margin-bottom: 100%;
@@ -439,7 +439,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 }
 .button, .dropdown {
   border: 0px;
-  border-radius: 5%;
+  border-radius: 5px;
   font-size: 120%;
   margin: 8px;
   padding: 0.4% 0.75% 0.4% 0.75%;
@@ -643,16 +643,19 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 }
 
 /* Inputs */
-input[type=text].text-input {
-  border: 0px;
-  border-radius: 5%;
+input[type=text].text-input, input[type=password].password-input {
+  border: 0px solid var(--underline-color);
+  border-radius: 5px;
   display: inline;
   font-size: 20px;
+  margin-bottom: 8px;
+  margin-top: 8px;
   overflow: hidden;
   padding: 8px;
-  position: relative;
+  position: sticky;
+  transition: 50ms linear;
 }
-input[type=text].text-input:after {
+/* input[type=text].text-input:after {
   background: var(--underline-color);
   bottom: -1px;
   content: "";
@@ -662,11 +665,17 @@ input[type=text].text-input:after {
   transition: width 0.3s ease-out;
   width: 0;
   z-index: -1;
+} */
+input[type=text].text-input:focus, input[type=text].text-input:active, input[type=password].password-input:focus, input[type=password].password-input:active {
+  border-bottom: 2px solid var(--underline-color);
+  border-radius: 9px;
+  margin-bottom: 6px;
 }
-input[type=text].text-input:focus:after, input[type=text].text-input:active:after {
-  left: 0;
-  right: auto;
-  width: 100%;
+input[type=radio].radio-input {
+  background: white;
+  border: 0px transparent;
+  cursor: pointer;
+  margin: 8px;
 }
 
 
