@@ -120,6 +120,42 @@ window.onclick = function(event) {
   }
 }
 
+// Modals
+function openModal(modalId) {
+  // Setting opacity to 1
+  document.getElementById(modalId).style.opacity = "1";
+  // Show modal
+  document.getElementById(modalId).style.display = "block";
+}
+function closeModal(modalId) {
+  // Setting opacity to 0
+  document.getElementById(modalId).style.opacity = "0";
+  // Planned destroy modal
+  setTimeout(function() {
+    document.getElementById(modalId).style.display = "none";
+  }, 300);
+}
+
+// Progress bars
+function getProgressValue(progressId) {
+  // Value returned as a percentage [0;1]
+  return parseInt(document.getElementById(progressId).getElementsByTagName('div')[0].style.width, 10) / 100;
+}
+function setProgressValue(progressId, value) {
+  if(value > 1) {
+    errLog("Value is > 100%.");
+  } else if(value < 0) {
+    errLog("Value is a negative percentage.");
+  } else {
+    // Set to the new percentage
+    try {
+      document.getElementById(progressId).getElementsByTagName('div')[0].style.width = (value * 100) + "%";
+    } catch(err) {
+      errLog("An error has occured :\n" + err);
+    }
+  }
+}
+
 // Sliders
 var slideIndex = 1;
 showSlides(slideIndex);
@@ -148,3 +184,5 @@ function showSlides(n) {
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " slider-active";
 }
+
+// Fire-API Utils
