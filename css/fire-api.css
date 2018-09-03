@@ -108,8 +108,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Preformatted text HTML tag */
 pre {
+  background-color: white;
+  font-family: monospace;
+  margin: 10px;
   margin-bottom: 1rem;
-  margin-top: 0px;
+}
+pre * {
+  font-family: monospace;
 }
 
 /* Hidden attribute hack fix */
@@ -1011,10 +1016,52 @@ ul.navbar-vertical {
 }
 
 /* Syntaxic coloration */
+:root {
+  --html-tagcolor: blue;
+  --html-tagnamecolor: blue;
+  --html-attributecolor: red;
+  --html-attributevaluecolor: purple;
+  --html-commentcolor: green;
+  --css-selectorcolor: blue;
+  --css-propertycolor: #8080c0;
+  --css-propertyvaluecolor: black;
+  --css-delimitercolor: black;
+  --css-importantcolor: red;
+  --js-color: black;
+  --js-keywordcolor: blue;
+  --js-stringcolor: #777777;
+  --js-numbercolor: red;
+  --js-propertycolor: darkblue;
+}
+pre.monokai-theme {
+  background-color: #272822;
+  color: white;
+  --html-tagcolor: #f92672;
+  --html-tagnamecolor: #f92672;
+  --html-attributecolor: #a6e22e;
+  --html-attributevaluecolor: #e6db74;
+  --html-commentcolor: #75715e;
+  --css-selectorcolor: #f92672;
+  --css-propertycolor: #66d9ef;
+  --css-propertyvaluecolor: #ae81ff;
+  --css-delimitercolor: white;
+  --css-importantcolor: #f92672;
+  --js-color: white;
+  --js-keywordcolor: #f92672;
+  --js-stringcolor: #e6db64;
+  --js-numbercolor: #ae81ff;
+  --js-propertycolor: #f92672;
+}
+.code-container {
+  display: inline-block;
+  margin: 10px;
+  max-width: 100%;
+}
 
-
-/* Icon lib */
-
+/* Icon lib by The Fat Soviet (https://www.youtube.com/channel/UCAo0muYFGx7v64Q7DTOwUNA), Fire-Softwares admin */
+.icon {
+  width: 24px;
+}
 
 /* Components animations */
 @-webkit-keyframes fadeSlider {
@@ -1061,3 +1108,17 @@ ul.navbar-vertical {
 }
 
 /* Text animations */
+
+
+/* Support Fire-API by adding this on your website */
+.fireapi-support-light, .fireapi-support-dark {
+  background-size: cover !important;
+  height: 64px;
+  width: 128px;
+}
+.fireapi-support-light {
+  background: url("https://cdn.fire-softwares.ga/ed98b737de9bf9775f7a491d02fe510d.png") no-repeat;
+}
+.fireapi-support-dark {
+  background: url("https://cdn.fire-softwares.ga/5869f87e93b392b087dee9af7c8b9bdc.png") no-repeat;
+}
