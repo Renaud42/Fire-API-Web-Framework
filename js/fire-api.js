@@ -253,11 +253,13 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function extract(str, start, end, func, repl) {
     var s, e, d = "", a = [];
 
-    while (str.search(start) > -1) {
+    while(str.search(start) > -1) {
       s = str.search(start);
       e = str.indexOf(end, s);
-      if (e == -1) {e = str.length;}
-      if (repl) {
+      if(e == -1) {
+        e = str.length;
+      }
+      if(repl) {
         a.push(func(str.substring(s, e + (end.length))));
         str = str.substring(0, s) + repl + str.substr(e + (end.length));
       } else {
@@ -722,7 +724,7 @@ function calculateEuler(iterations) {
   for(var i = 1; i <= iterations; i++) {
     f *= (1.0 / i);
 
-    if(f == 0) {
+    if(f <= 0) {
       break;
     }
 
@@ -732,11 +734,9 @@ function calculateEuler(iterations) {
 	// Example :  2 + 1/(1*2) + 1/(1*2*3) + 1/(1*2*3*4) etc..
 	return result;
 }
-function secondDegreePolynomialParabolaVertexGetX(a, b) {
+function secondDegreePolynomialParabolaVertexGetAlpha(a, b) {
 	return -b / (2 * a);
 }
 function homographicForbiddenValue(c, d) {
 	return -d / c;
 }
-
-// Analytics
