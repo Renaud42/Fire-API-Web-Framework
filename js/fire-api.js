@@ -740,3 +740,66 @@ function secondDegreePolynomialParabolaVertexGetAlpha(a, b) {
 function homographicForbiddenValue(c, d) {
 	return -d / c;
 }
+
+
+// Typing text animations
+var TxtType = function(elmnt, txtToType, period) {
+  this.txtToType = txtToType;
+  this.elmnt = elmnt;
+  this.loopNum = 0;
+  this.period = parseInt(period, 10) || 2000;
+  this.txt = '';
+  this.tick();
+  this.isDeleting = false;
+};
+TxtType.prototype.tick = function() {
+  var i = this.loopNum % this.txtToType.length;
+  var fullTxt = this.txtToType[i];
+
+  if(this.isDeleting) {
+    this.txt = fullTxt.substring(0, this.txt.length - 1);
+  } else {
+    this.txt = fullTxt.substring(0, this.txt.length + 1);
+  }
+
+  this.elmnt.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+
+  var that = this;
+  var delta = 300 - Math.random() * 100;
+
+  if(this.isDeleting) {
+    delta /= 2;
+  }
+
+  if(!this.isDeleting && this.txt === fullTxt) {
+    delta = this.period;
+    this.isDeleting = true;
+  } else if(this.isDeleting && this.txt === '') {
+    this.isDeleting = false;
+    this.loopNum++;
+    delta = 500;
+  }
+
+  setTimeout(function() {
+    that.tick();
+  }, delta);
+};
+window.onload = function() {
+  var elements = document.getElementsByClassName('text-animation-typing');
+
+  for(var i = 0; i < elements.length; i++) {
+    var txtToType = elements[i].getAttribute('data-words');
+    var period = elements[i].getAttribute('data-cooldown');
+
+    if(txtToType) {
+      new TxtType(elements[i], JSON.parse(txtToType), period);
+    }
+  }
+
+  var css = document.createElement("style");
+
+  css.type = "text/css";
+  css.innerHTML = ".text-animation-typing > .wrap { border-right: 0.08em solid var(--caret-color) }";
+
+  document.body.appendChild(css);
+};

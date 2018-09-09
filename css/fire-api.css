@@ -1106,9 +1106,40 @@ pre.monokai-theme {
   .1% { opacity: 1; -webkit-transform: scale(.75); }
   100% { opacity: 1; -webkit-transform: scale(.75); }
 }
+@-webkit-keyframes caret {
+  0% { border-right-color: var(--caret-color); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: var(--caret-color); }
+}
+@-moz-keyframes caret {
+  0% { border-right-color: var(--caret-color); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: var(--caret-color); }
+}
+@-o-keyframes caret {
+  0% { border-right-color: var(--caret-color); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: var(--caret-color); }
+}
+@keyframes caret {
+  0% { border-right-color: var(--caret-color); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: var(--caret-color); }
+}
 
 /* Text animations */
-
+:root {
+  --caret-color: black;
+}
+.caret-animated > .wrap {
+  -webkit-animation: caret 1s infinite;
+  -moz-animation: caret 1s infinite;
+  -o-animation: caret 1s infinite;
+  animation: caret 1s infinite;
+}
+.letters-animated > .wrap {
+  transition: content 0.5s linear;
+}
 
 /* Support Fire-API by adding this on your website */
 .fireapi-support-light, .fireapi-support-dark {
