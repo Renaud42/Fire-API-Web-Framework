@@ -512,11 +512,12 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   margin-bottom: 0px !important;
 }
 .dropdown-content {
-  display: none;
+  display: block;
   float: left;
   max-width: 100%;
+  opacity: 0;
   position: absolute;
-  transition: display .2s linear;
+  transition: opacity .2s linear;
   z-index: 1;
 }
 .dropdown-content button:first-of-type {
@@ -538,6 +539,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
 }
 .dropdown-show {
   display: block;
+  opacity: 1;
 }
 
 /* Hyperlink texts */
@@ -1126,6 +1128,34 @@ pre.monokai-theme {
   50% { border-right-color: transparent; }
   100% { border-right-color: var(--caret-color); }
 }
+@-webkit-keyframes console-caret {
+  0% { visibility: visible; }
+  50% { visibility: visible; }
+  50.01% { visibility: hidden; }
+  99.99% { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-moz-keyframes console-caret {
+  0% { visibility: visible; }
+  50% { visibility: visible; }
+  50.01% { visibility: hidden; }
+  99.99% { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@-o-keyframes console-caret {
+  0% { visibility: visible; }
+  50% { visibility: visible; }
+  50.01% { visibility: hidden; }
+  99.99% { visibility: hidden; }
+  100% { visibility: visible; }
+}
+@keyframes console-caret {
+  0% { visibility: visible; }
+  50% { visibility: visible; }
+  50.01% { visibility: hidden; }
+  99.99% { visibility: hidden; }
+  100% { visibility: visible; }
+}
 
 /* Text animations */
 :root {
@@ -1139,6 +1169,24 @@ pre.monokai-theme {
 }
 .letters-animated > .wrap {
   transition: content 0.5s linear;
+}
+.console-container {
+  bottom: 0;
+  display: block;
+  font-family: monospace;
+  font-size: 4em;
+  height: 1em;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+.console-caret {
+  color: white;
+  display: inline-block;
+  left: 10px;
+  position: relative;
+  top: -0.14em;
 }
 
 /* Support Fire-API by adding this on your website */

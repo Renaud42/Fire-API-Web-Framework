@@ -27,10 +27,15 @@
 /**************************************/
 // Constants
 var API_VERSION = "1.0";
-var JSON_FIRERADIO_PLAYLIST = "https://api.fire-softwares.ga/fire-radio/?action=playlist";
-var JSON_FIRERADIO_STATS = "https://api.fire-softwares.ga/fire-radio/stats.json";
+var FIRERADIO_BASE_URL = "https://api.fire-softwares.ga/fire-radio/";
+var FRAMEWORK_INFORMATIONS_URL = "https://api.fire-softwares.ga/framework.php";
+var JSON_FIRERADIO_PLAYLIST = FIRERADIO_BASE_URL + "?action=playlist";
+var JSON_FIRERADIO_LAST_ADDED_TRACK = FIRERADIO_BASE_URL + "lastadded.json";
+var JSON_FIRERADIO_LAST_REMOVED_TRACK = FIRERADIO_BASE_URL + "lastremoved.json";
+var JSON_FIRERADIO_STATS = FIRERADIO_BASE_URL + "stats.json";
 var JSON_MUMBLE = "https://panel.omgserv.com/json/180774/status";
 var JSON_VPS = "https://panel.omgserv.com/json/180278/status";
+var UPDATE_URL = "https://api.fire-softwares.ga/web-framework/downloads";
 
 // Maths constants
 var CHAMPERNOWNE = 0.12345678910111213;
@@ -52,7 +57,7 @@ var NEUTRON_MASS = 1.675 * Math.pow(10, -27);
 var PROTON_MASS = 1.673 * Math.pow(10, -27);
 
 // Variables
-var API_APPLICATION_NAME = "Fire-API-Web-Framework Javascript App"
+var API_APPLICATION_NAME = "Fire-API-Web-Framework Javascript App";
 
 
 /*************************************/
@@ -71,6 +76,58 @@ function log(text) {
 }
 function errLog(text) {
   console.error("[Fire-API Error] " + text);
+}
+
+// Update check
+function createCORSRequest(method, url) {
+  var xmlhttp = new XMLHttpRequest();
+
+  if ("withCredentials" in xmlhttp) {
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    xmlhttp.open(method, url, true);
+    xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+    xmlhttp.setRequestHeader('Content-Type', 'application/json');
+    xmlhttp.send();
+  } else if (typeof XDomainRequest != "undefined") {
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    xmlhttp = new XDomainRequest();
+    xmlhttp.open(method, url);
+    xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+    xmlhttp.setRequestHeader('Content-Type', 'application/json');
+    xmlhttp.send();
+  } else {
+    // Otherwise, CORS is not supported by the browser.
+    xmlhttp = null;
+  }
+
+  return xmlhttp;
+}
+try {
+  var xhr = createCORSRequest("GET", FRAMEWORK_INFORMATIONS_URL);
+
+  if (!xhr) {
+    errLog("Cross-Origin Resource Sharing isn't supported on your browser.\nSo we can't check for Fire-API-Web-Framework updates and maintenance state.");
+    throw new Error("Cross-Origin Resource Sharing not supported in this browser.");
+  }
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var type = xhr.getResponseHeader('Content-Type');
+      if (type.indexOf("text") !== 1) {
+        if (JSON.parse(xhr.responseText)['informations']['version'] != API_VERSION)
+          log("Fire-API isn't up to date !\nLast version is " + JSON.parse(xhr.responseText)['informations']['version'] + ".");
+        else
+          log("Fire-API is up to date. Nice !");
+        if (JSON.parse(xhr.responseText)['informations']['online'] == false)
+          log("Fire-API is in maintenance, so some function will be bugged, be right back !");
+      }
+    }
+  }
+} catch (e) {
+  errLog("Can't check for new Fire-API-Web-Framework updates or Fire-API-Web-Framework maintenance !\nPlease check that your Internet connection is enabled and that your firewall doesn't block access to \"api.fire-softwares.ga\" URL.");
+  console.error(e);
 }
 
 // Copy to clipboard
@@ -124,7 +181,7 @@ for(i = 0; i < close.length; i++) {
     setTimeout(function() {
       div.style.display = "none";
     }, 300);
-  }
+  };
 }
 
 // Dropdowns
@@ -132,7 +189,7 @@ function dropdown(dropdownId) {
   // Get the specified dropdown and showing it
   document.getElementById(dropdownId).classList.toggle('dropdown-show');
 }
-// Closing dropdown if we click outside of it
+// Closing dropdown if we click or mouse over outside of it
 window.onclick = function(event) {
   if(!event.target.matches('.dropdown-button')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -144,7 +201,7 @@ window.onclick = function(event) {
       }
     }
   }
-}
+};
 
 // Modals
 function openModal(modalId) {
@@ -197,10 +254,10 @@ function showSlides(n) {
   var dots = document.getElementsByClassName("slider-dot");
 
   if(n > slides.length) {
-    slideIndex = 1
+    slideIndex = 1;
   }
   if(n < 1) {
-    slideIndex = slides.length
+    slideIndex = slides.length;
   }
   for(i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
@@ -397,7 +454,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
       for(i = 0; i < midz.length; i++) {
         if(midz.substr(i, 1) == "{") {
           cc++;
-          c++
+          c++;
         }
         if(midz.substr(i, 1) == "}") {
           cc--;
@@ -741,8 +798,7 @@ function homographicForbiddenValue(c, d) {
 	return -d / c;
 }
 
-
-// Typing text animations
+// Text typing text animation
 var TxtType = function(elmnt, txtToType, period) {
   this.txtToType = txtToType;
   this.elmnt = elmnt;
@@ -784,6 +840,64 @@ TxtType.prototype.tick = function() {
     that.tick();
   }, delta);
 };
+
+// Console typing text animation
+function consoleTypingAnimation(id, caret, words, colors, period, caretperiod) {
+  if(colors === undefined)
+    colors = ['#fff'];
+  if(period === undefined)
+    period = 1000;
+  if(caretperiod === undefined)
+    caretperiod = 0;
+
+  var con = caret;
+  var elmnt = document.getElementById(id);
+  var letterCount = 1;
+  var waiting = false;
+  var x = 1;
+  var basichtml = elmnt.innerHTML;
+
+  elmnt.setAttribute('style', 'color: ' + colors[0]);
+
+  window.setInterval(function() {
+    if(letterCount === 0 && waiting === false) {
+      waiting = true;
+
+      elmnt.innerHTML = words[0].substring(0, letterCount);
+
+      window.setTimeout(function() {
+        var usedColor = colors.shift();
+        colors.push(usedColor);
+
+        var usedWord = words.shift();
+        words.push(usedWord);
+
+        x = 1;
+
+        elmnt.setAttribute('style', 'color: ' + colors[0]);
+
+        letterCount += x;
+        waiting = false;
+      }, 1000);
+    } else if(letterCount === words[0].length + 1 && waiting === false) {
+      waiting = true;
+
+      document.getElementById(elmnt.parentNode.getElementsByClassName("console-caret")[0].id).setAttribute('style', '-webkit-animation: console-caret ' + caretperiod + 'ms infinite;-moz-animation: console-caret ' + caretperiod + 'ms infinite;-o-animation: console-caret ' + caretperiod + 'ms infinite;animation: console-caret ' + caretperiod + 'ms infinite;');
+
+      window.setTimeout(function() {
+        x = -1;
+        letterCount += x;
+        waiting = false;
+      }, period);
+    } else if(waiting === false) {
+      elmnt.innerHTML = words[0].substring(0, letterCount) + basichtml;
+      letterCount += x;
+    }
+  }, 120);
+}
+
+
+// On load function
 window.onload = function() {
   var elements = document.getElementsByClassName('text-animation-typing');
 
@@ -802,4 +916,17 @@ window.onload = function() {
   css.innerHTML = ".text-animation-typing > .wrap { border-right: 0.08em solid var(--caret-color) }";
 
   document.body.appendChild(css);
+
+  elements = document.getElementsByClassName('console-container');
+
+  for(var i = 0; i < elements.length; i++) {
+    var txtToType = elements[i].getAttribute('data-words');
+    var period = elements[i].getAttribute('data-cooldown');
+    var colors = elements[i].getAttribute('data-colors');
+    var caretperiod = elements[i].getAttribute('data-caret-period');
+
+    if(txtToType) {
+      consoleTypingAnimation(elements[i].id, elements[i].parentNode.getElementsByClassName("console-caret")[0], JSON.parse(txtToType), JSON.parse(colors), period, caretperiod);
+    }
+  }
 };
