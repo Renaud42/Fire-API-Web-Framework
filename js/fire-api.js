@@ -896,6 +896,15 @@ function consoleTypingAnimation(id, caret, words, colors, period, caretperiod) {
   }, 120);
 }
 
+// Image cursor following text animation
+function icfr(elmnt, e, sensivity) {
+  if(sensivity === undefined)
+    sensivity = 1;
+  elmnt.style.backgroundPosition = ((4 * e.clientX) / (570 / sensivity)) + 40 + "%" + ((4 * e.clientY) / (570 / sensivity)) + 50 + "%";
+}
+
+// Loading then send text animation
+
 
 // On load function
 window.onload = function() {
@@ -919,14 +928,20 @@ window.onload = function() {
 
   elements = document.getElementsByClassName('console-container');
 
-  for(var i = 0; i < elements.length; i++) {
-    var txtToType = elements[i].getAttribute('data-words');
-    var period = elements[i].getAttribute('data-cooldown');
-    var colors = elements[i].getAttribute('data-colors');
-    var caretperiod = elements[i].getAttribute('data-caret-period');
+  for(var j = 0; j < elements.length; j++) {
+    var txtToType = elements[j].getAttribute('data-words');
+    var period = elements[j].getAttribute('data-cooldown');
+    var colors = elements[j].getAttribute('data-colors');
+    var caretperiod = elements[j].getAttribute('data-caret-period');
 
     if(txtToType) {
-      consoleTypingAnimation(elements[i].id, elements[i].parentNode.getElementsByClassName("console-caret")[0], JSON.parse(txtToType), JSON.parse(colors), period, caretperiod);
+      consoleTypingAnimation(elements[j].id, elements[j].parentNode.getElementsByClassName("console-caret")[0], JSON.parse(txtToType), JSON.parse(colors), period, caretperiod);
     }
+  }
+
+  elements = document.getElementsByClassName('loading-text-animation');
+
+  for(var lta = 0; lta < elements.length; lta++) {
+    elements[lta].setAttribute('data-text', elements[lta].innerHTML);
   }
 };

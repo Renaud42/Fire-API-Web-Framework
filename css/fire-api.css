@@ -459,6 +459,7 @@ h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-
   border-radius: 5px;
   font-size: 120%;
   margin: 8px;
+  outline-color: transparent;
   padding: .4% .75% .4% .75%;
   position: sticky;
   transition: * .4s linear;
@@ -672,6 +673,7 @@ input[type=text].text-input, input[type=password].password-input, input[type=dat
   font-size: 20px;
   margin-bottom: 8px;
   margin-top: 8px;
+  outline-color: transparent;
   overflow: hidden;
   padding: 8px;
   position: sticky;
@@ -920,6 +922,9 @@ ul.navbar-vertical {
     text-align: center;
   }
 }
+.navbar-active {
+  font-weight: bold;
+}
 
 /* Progresses */
 .progress {
@@ -1060,23 +1065,18 @@ pre.monokai-theme {
   max-width: 100%;
 }
 
-/* Icon lib by The Fat Soviet (https://www.youtube.com/channel/UCAo0muYFGx7v64Q7DTOwUNA), Fire-Softwares admin */
-.icon {
-  width: 24px;
-}
-
 /* Components animations */
 @-webkit-keyframes fadeSlider {
-  from {opacity: .2}
-  to {opacity: 1}
+  from { opacity: .2 }
+  to { opacity: 1 }
 }
 @-moz-keyframes fadeSlider {
-  from {opacity: .2}
-  to {opacity: 1}
+  from { opacity: .2}
+  to { opacity: 1 }
 }
 @keyframes fade {
-  from {opacity: .2}
-  to {opacity: 1}
+  from { opacity: .2 }
+  to { opacity: 1 }
 }
 @-webkit-keyframes pop-in {
   0% { opacity: .8; -webkit-transform: scale(0); }
@@ -1156,10 +1156,30 @@ pre.monokai-theme {
   99.99% { visibility: hidden; }
   100% { visibility: visible; }
 }
+@keyframes stroke-offset {
+	100% { stroke-dashoffset: -35%; }
+}
+@keyframes load {
+  0% { left: 0px; right: auto; text-align: left; width: 0%; }
+  50% { left: 0px; right: auto; text-align: left; width: 100%; }
+  50.1% { left: auto; right: 0px; text-align: right; width: 100%; }
+  100% { left: auto; right: 0px; text-align: right; width: 0%; }
+}
+@keyframes send {
+  0% { opacity: 1; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 /* Text animations */
 :root {
   --caret-color: black;
+  --loading-color: #388e3c;
+  --sbe-stroke-color-1: #4D163D;
+  --sbe-stroke-color-2: #840037;
+  --sbe-stroke-color-3: #BD0034;
+  --sbe-stroke-color-4: #BD0034;
+  --sbe-stroke-color-5: #FDB731;
 }
 .caret-animated > .wrap {
   -webkit-animation: caret 1s infinite;
@@ -1182,11 +1202,68 @@ pre.monokai-theme {
   width: auto;
 }
 .console-caret {
+  /* In case it don't works with JavaScript, waiting for a fix */
+  animation: console-caret .4s infinite;
   color: white;
   display: inline-block;
   left: 10px;
   position: relative;
   top: -0.14em;
+}
+.svg-bordermove-effect {
+  display: block;
+}
+.text-sbe {
+  animation: stroke-offset 5.5s infinite linear;
+  fill: none;
+  font-size: 10.5em;
+  stroke: white;
+  stroke-dasharray: 6% 29%;
+  stroke-dashoffset: 0%;
+  stroke-width: 5px;
+}
+.text-sbe:nth-child(1) {
+  animation-delay: -1s;
+	stroke: var(--sbe-stroke-color-1);
+}
+.text-sbe:nth-child(2) {
+  animation-delay: -2s;
+	stroke: var(--sbe-stroke-color-2);
+}
+.text-sbe:nth-child(3) {
+  animation-delay: -3s;
+	stroke: var(--sbe-stroke-color-3);
+}
+.text-sbe:nth-child(4) {
+  animation-delay: -4s;
+	stroke: var(--sbe-stroke-color-4);
+}
+.text-sbe:nth-child(5) {
+  animation-delay: -5s;
+	stroke: var(--sbe-stroke-color-5);
+}
+.image-cursor-following-text {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  background-position: 40% 50%;
+  color: transparent;
+  position: relative;
+}
+.loading-text-animation {
+  animation: send 2s;
+  color: #d4d4d4;
+  display: inline-block;
+  margin: 0 auto;
+  opacity: 0;
+  position: relative;
+}
+.loading-text-animation::before {
+  animation: load 2s;
+  color: var(--loading-color);
+  content: attr(data-text);
+  overflow: hidden;
+  position: absolute;
+  width: 0;
 }
 
 /* Support Fire-API by adding this on your website */
