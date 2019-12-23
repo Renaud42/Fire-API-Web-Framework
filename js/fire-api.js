@@ -1,7 +1,7 @@
 /*
   MIT License
 
-  Copyright (c) 2018 Renaud
+  Copyright (c) 2019 Renaud
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -22,255 +22,646 @@
   SOFTWARE.
 */
 
-/**************************************/
-/*         FIRE-API CONSTANTS         */
-/**************************************/
-// Constants
-var API_VERSION = "1.0";
-var FIRERADIO_BASE_URL = "https://api.fire-softwares.ga/fire-radio/";
-var FRAMEWORK_INFORMATIONS_URL = "https://api.fire-softwares.ga/framework.php";
-var JSON_FIRERADIO_PLAYLIST = FIRERADIO_BASE_URL + "?action=playlist";
-var JSON_FIRERADIO_LAST_ADDED_TRACK = FIRERADIO_BASE_URL + "lastadded.json";
-var JSON_FIRERADIO_LAST_REMOVED_TRACK = FIRERADIO_BASE_URL + "lastremoved.json";
-var JSON_FIRERADIO_STATS = FIRERADIO_BASE_URL + "stats.json";
-var JSON_MUMBLE = "https://panel.omgserv.com/json/180774/status";
-var JSON_VPS = "https://panel.omgserv.com/json/180278/status";
-var UPDATE_URL = "https://api.fire-softwares.ga/web-framework/downloads";
+/**
+ * Definitively best class ever.
+ *
+ * @author Renaud
+ * @copyright 2019 Fire-Softwares, www.fire-softwares.ga
+ * @license https://www.gnu.org/licenses/gpl-3.0.html
+ * @link https://api.fire-softwares.ga
+ * @version 1.1
+ * @since 1.0
+ */
+class Fire_API {
+  // Constructor
+  constructor() {
+    this.updatesCheck;
+  }
 
-// Maths constants
-var CHAMPERNOWNE = 0.12345678910111213;
+  // Functions
+  /**
+   * Get current version of your Framework
+   *
+   * @return {string} Current version of API used
+   */
+  get frameworkVersion() {
+    return "1.1";
+  }
+  /**
+   * Get Fire-API Web-Framework update page URL
+   *
+   * @return {string} Fire-API update page URL
+   */
+  get frameworkUpdatePage() {
+    return "https://api.fire-softwares.ga/?page=download";
+  }
+  /**
+   * Updates check method
+   *
+   * @return {boolean} True if up to date, false if need to update
+   */
+  get updatesCheck() {
+    // API instances
+    let updater = new API(ServerName.FIRE_SOFTWARES, ServerInfoType.ONLINE);
+    let versionChecker = new API(ServerName.FRAMEWORK_STATUS, ServerInfoType.VERSION);
 
-// Physics and chemical constants
-var AVOGADRO = 6.022140857 * Math.pow(10, 23);
-var BOLTZMANN = 1.38066 * Math.pow(10, -23), kB = 1.38066 * Math.pow(10, -23);
-var C = 2.99792458 * Math.pow(10, 8), LIGHT_SPEED = 2.99792458 * Math.pow(10, 8);
-var EARTH_GRAVITATIONAL_FORCE = 9.80665;
-var ELEMENTARY_CHARGE = 1.60219 * Math.pow(10, -19);
-var FARADAY = 96484;
-var G = 6.672 * Math.pow(10, -11), GRAVITATIONAL_CONSTANT = 6.672 * Math.pow(10, -11);
-var PERFECT_GASSES = 8.3144;
-var PLANCK = 6.62617;
+    let isUpToDate = false;   // Boolean to store return
 
-// Masses
-var ELECTRON_MASS = 9.10953 * Math.pow(10, -31);
-var NEUTRON_MASS = 1.675 * Math.pow(10, -27);
-var PROTON_MASS = 1.673 * Math.pow(10, -27);
+    // Checking for updates
+    try {
+      if (updater.getServerInformation) {
+        let lastversion = versionChecker.getServerInformation
+        if (parseFloat(lastversion) > parseFloat(this.frameworkVersion)) console.warn(Messages.FRAMEWORK_WARNING_PREFIX + " " + Messages.FRAMEWORK_UPDATE_AVAILABLE.replace('%api-update-page%', this.frameworkUpdatePage).replace('%lastest-stable%', lastversion).replace('%framework-version%', this.frameworkVersion));
+        else {
+          if (parseFloat(lastversion) < parseFloat(this.frameworkVersion)) console.warn(Messages.FRAMEWORK_WARNING_PREFIX + " " + Messages.FRAMEWORK_BETA.replace('%api-update-page%', this.frameworkUpdatePage).replace('%lastest-stable%', lastversion).replace('%framework-version%', this.frameworkVersion));
+          else console.log(Messages.FRAMEWORK_WARNING_PREFIX + " " + Messages.FRAMEWORK_UP_TO_DATE.replace('%framework-version%', this.frameworkVersion));
+          isUpToDate = true;
+        }
+      }
+    } catch (error) {
+      console.error(Messages.FRAMEWORK_ERROR_PREFIX + " " + Messages.UPDATE_CHECK_EXCEPTION);
+      console.error(Messages.FRAMEWORK_ERROR_PREFIX + " " + error.message);
+      throw new Error(Messages.UPDATE_CHECK_EXCEPTION + " " + error.message);
+    }
 
-// Variables
-var API_APPLICATION_NAME = "Fire-API-Web-Framework Javascript App";
+    console.log();
+    console.log(Messages.FRAMEWORK_PREFIX + " " + Messages.FRAMEWORK_HELLO.replace('%framework-version%', this.frameworkVersion));
 
-
-/*************************************/
-/*          STARTUP MESSAGE          */
-/*************************************/
-console.log("-------------------------------------------------------\nFire-API v" + API_VERSION + " by Renaud42 from Fire-Softwares enabled !\n-------------------------------------------------------");
-
-
-/**************************************/
-/*          FIRE-API STUFF            */
-/**************************************/
-
-// Loggers
-function log(text) {
-  console.log("[Fire-API] " + text);
+    return isUpToDate;  // Return update state
+  }
 }
-function errLog(text) {
-  console.error("[Fire-API Error] " + text);
+
+// -------------------------------------------
+//                 CONSTANTS
+// -------------------------------------------
+/**
+ * URL of servers status file (requests through api.fire-softwares.ga to allow
+ * CORS requests)
+ *
+ * @author Renaud
+ * @since 1.1
+ * @version 1.1
+ */
+const Server = {
+  /**
+	 * Server #0 status file URL
+	 */
+  STATUS_0: "https://api.fire-softwares.ga/cors/?server=0",
+  /**
+   * Server #1 status file URL
+   */
+  STATUS_1: "https://api.fire-softwares.ga/cors/?server=1",
+  /**
+   * Server #2 status file URL
+   */
+  STATUS_2: "https://api.fire-softwares.ga/cors/?server=2",
+  /**
+   * Fire-API status file URL
+   */
+  STATUS_API: "https://api.fire-softwares.ga/cors/?server=999",
+  /**
+   * Discord status file URL
+   */
+  STATUS_DISCORD: "https://api.fire-softwares.ga/cors/?server=997",
+  /**
+   * Fire-API Web-Framework status file URL
+   */
+  STATUS_FRAMEWORK: "https://api.fire-softwares.ga/cors/?server=998",
+  /**
+   * Mumble Channel Viewer Protocol URL
+   */
+  STATUS_MUMBLE_CVP: "https://api.fire-softwares.ga/cors/?server=996"
+}
+/**
+ * All Fire-API messages
+ *
+ * @author Renaud
+ * @since 1.1
+ * @version 1.1
+ */
+const Messages = {
+  // -------------------------------------------
+  //                  EXCEPTIONS
+  // -------------------------------------------
+  /**
+   * Message returned when copying to clipboard operation failed
+   */
+  CANT_COPY_TO_CLIPBOARD_EXCEPTION: "Unable to copy text to clipboard :",
+  /**
+   * Message returned when server information getting operation failed
+   */
+  CANT_GET_SERVER_INFORMATION_EXCEPTION: "Can't get server information.",
+  /**
+   * Message returned when unknown server name is specified
+   */
+  UNKNOWN_SERVER_EXCEPTION: "Unknown server name.",
+  /**
+   * Message returned when can't check for updates
+   */
+  UPDATE_CHECK_EXCEPTION: "Can't check for updates :",
+  /**
+   * Message returned when wrong server information type is specified
+   */
+  WRONG_SERVER_INFO_TYPE_EXCEPTION: "Wrong server info type \"%info-type%\" specified for \"%name%\" server.",
+
+  // -------------------------------------------
+  //                   PREFIXES
+  // -------------------------------------------
+  /**
+   * Fire-API Web-Framework logs regular prefix
+   */
+  FRAMEWORK_PREFIX: "[Fire-API Web-Framework]",
+  /**
+   * Fire-API Web-Framework logs error prefix
+   */
+  FRAMEWORK_ERROR_PREFIX : "[Fire-API Web-Framework Error]",
+  /**
+   * Fire-API Web-Framework logs warning prefix
+   */
+  FRAMEWORK_WARNING_PREFIX : "[Fire-API Web-Framework Warning]",
+
+  // -------------------------------------------
+  //                   SUCCESS
+  // -------------------------------------------
+  /**
+   * Message shown when Fire-API Web-Framework is successfully loaded with main
+   * class initilization
+   */
+  FRAMEWORK_HELLO: "Fire-API Web-Framework version %framework-version% by Fire-Softwares successfully loaded !",
+  /**
+   * Message shown when your Fire-API Web-Framework version is the lastest
+   * stable
+   */
+  FRAMEWORK_UP_TO_DATE: "You're running the lastest version of Fire-API Web-Framework (%framework-version%), nice !",
+
+  // -------------------------------------------
+  //                  WARNINGS
+  // -------------------------------------------
+  /**
+   * Message shown when a Fire-API Web-Framework Beta is used
+   */
+  FRAMEWORK_BETA: "Warning : you are using a beta / unstable build of Fire-API Web-Framework (%framework-version%). If you don't know why you see this warning, go back to lastest stable version (%lastest-stable%) on %api-update-page%. Or else you're in the future of Fire-API Web-Framework 8)",
+  /**
+   * Message shown when a Fire-API Web-Framework update is available
+   */
+  FRAMEWORK_UPDATE_AVAILABLE: "New update available : Fire-API Web-Framework version %new-version%. You can get the update here : %api-update-page%"
+}
+/**
+ * Math constants
+ *
+ * @author Renaud
+ * @since 1.1
+ * @version 1.1
+ */
+const MathConstants = {
+  // Champernowne
+  CHAMPERNOWNE: 0.12345678910111213,
+  C10: 0.12345678910111213,
+  // Gold number
+  GOD_NUMBER: (1 + Math.sqrt(5)) / 2,
+  GOLD_NUMBER: (1 + Math.sqrt(5)) / 2,
+  GOLD_SECTION: (1 + Math.sqrt(5)) / 2
+}
+/**
+ * Physics and chemical related constants
+ *
+ * @author Renaud
+ * @since 1.1
+ * @version 1.1
+ */
+const PhysChemConstants = {
+  // Constants
+  AVOGADRO: 6.022140857 * Math.pow(10, 23),
+  BOLTZMANN: 1.38066 * Math.pow(10, -23),
+  kB: 1.38066 * Math.pow(10, -23),
+  C: 2.99792458 * Math.pow(10, 8),
+  LIGHT_SPEED: 2.99792458 * Math.pow(10, 8),
+  EARTH_GRAVITATIONAL_FORCE: 9.80665,
+  ELEMENTARY_CHARGE: 1.60219 * Math.pow(10, -19),
+  FARADAY: 96484,
+  G: 6.672 * Math.pow(10, -11),
+  GRAVITATIONAL_CONSTANT: 6.672 * Math.pow(10, -11),
+  PERFECT_GASSES: 8.3144,
+  PLANCK: 6.62617,
+  // Masses
+  ELECTRON_MASS: 9.10953 * Math.pow(10, -31),
+  NEUTRON_MASS: 1.675 * Math.pow(10, -27),
+  PROTON_MASS: 1.673 * Math.pow(10, -27)
 }
 
-// Update check
-function createCORSRequest(method, url) {
+// -------------------------------------------
+//                 API WRAPPER
+// -------------------------------------------
+/**
+ * Server names
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ */
+const ServerName = {
+    FIRE_SOFTWARES: 0,
+    FIRE_NETWORK: 1,
+    MUMBLE: 2,
+    MUMBLE_CVP: 996,
+    DISCORD: 997,
+    FRAMEWORK_STATUS: 998,
+    API_STATUS: 999
+}
+/**
+ * Type of server info required
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ */
+const ServerInfoType = {
+  CHANNELS: 0,
+  CPU_LOAD_0: 1,
+  CPU_LOAD_1: 2,
+  CPU_LOAD_2: 3,
+  DISCORD_ID: 4,
+  DISK_MAX: 5,
+  DISK_PERCENT: 6,
+  DISK_UNIT: 7,
+  DISK_USED: 8,
+  HOSTNAME: 9,
+  MEMBERS: 10,
+  MEMBERS_ONLINE: 11,
+  MUMBLE_X_CONNECT_URL: 12,
+  ONLINE: 13,
+  PLAYER_COUNT: 14,
+  RAM_MAX: 15,
+  RAM_PERCENT: 16,
+  RAM_UNIT: 17,
+  RAM_USED: 18,
+  SERVER_NAME: 19,
+  SERVER_STATUS: 20,
+  UPTIME: 21,
+  VERSION: 22
+}
+/**
+ * Make requests to Fire-API and get response with this class.
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ */
+class API {
+  // Constructor
+  constructor(name, infoType, refreshfile = true, cachedcontent = "") {
+    this.name = name;
+    this.infoType = infoType;
+    this.refreshfile = refreshfile;
+    this.cachedcontent = cachedcontent;
+  }
+
+  // Functions
+  /**
+   * Returns a specified information of the specified server
+   * (performance tip : run this in an asynchronous function)
+   *
+	 * @return {object} Information needed
+	 * @throw {Error} Thrown when can't get server information or when unknown ServerName/ServerInfoType is specified
+   */
+  get getServerInformation() {
+    // Pinging Fire-Softwares server to check if Fire-Softwares servers are
+    // available
+    let ping = hostReachable(Server.STATUS_FRAMEWORK);
+
+    // Getting required content on corresponding URL
+    if (ping || (!ping && !this.refreshfile && this.cachedcontent != "")) {
+      if ((!this.refreshfile && this.cachedcontent == "") || this.refreshfile) {
+        // Creating synchronous Cross-Origin Resource Sharing request
+        let request = createCORSRequest("GET", this.getServerStatusURL, false);
+
+        // If request is ready and status is 200 (OK) and content type
+        // compatible then set cache to request response raw text
+        if (request.readyState === 4 && request.status === 200) {
+          if (request.getResponseHeader('Content-Type').indexOf("text") !== 1) this.cachedcontent = request.responseText;
+        } // Else we throw an error because to inform that we can't get server information
+        else throw new Error(Messages.CANT_GET_SERVER_INFORMATION_EXCEPTION);
+      }
+
+      // Returning corresponding information
+      switch (this.name) {
+        case ServerName.FIRE_SOFTWARES:
+        case ServerName.FIRE_NETWORK:
+          switch (this.infoType) {
+            case ServerInfoType.CPU_LOAD_0:
+              return JSON.parse(this.cachedcontent)['status']['cpu'][0];
+            case ServerInfoType.CPU_LOAD_1:
+              return JSON.parse(this.cachedcontent)['status']['cpu'][1];
+            case ServerInfoType.CPU_LOAD_2:
+              return JSON.parse(this.cachedcontent)['status']['cpu'][2];
+            case ServerInfoType.DISK_MAX:
+              return JSON.parse(this.cachedcontent)['status']['disk']['total'];
+            case ServerInfoType.DISK_PERCENT:
+              return JSON.parse(this.cachedcontent)['status']['disk']['percent'];
+            case ServerInfoType.DISK_UNIT:
+              return JSON.parse(this.cachedcontent)['status']['units']['disk'];
+            case ServerInfoType.DISK_USED:
+              return JSON.parse(this.cachedcontent)['status']['disk']['used'];
+            case ServerInfoType.HOSTNAME:
+              return JSON.parse(this.cachedcontent)['status']['hostname'];
+            case ServerInfoType.ONLINE:
+              return JSON.parse(this.cachedcontent)['status']['online'];
+            case ServerInfoType.RAM_MAX:
+              return JSON.parse(this.cachedcontent)['status']['ram']['total'];
+            case ServerInfoType.RAM_PERCENT:
+              return JSON.parse(this.cachedcontent)['status']['ram']['percent'];
+            case ServerInfoType.RAM_UNIT:
+              return JSON.parse(this.cachedcontent)['status']['units']['ram'];
+            case ServerInfoType.RAM_USED:
+              return JSON.parse(this.cachedcontent)['status']['ram']['used'];
+
+            default:
+              throw new Error(Messages.WRONG_SERVER_INFO_TYPE_EXCEPTION.replace('%name%', this.name).replace('%info-type%', this.infoType));
+          }
+        case ServerName.MUMBLE:
+          switch (this.infoType) {
+            case ServerInfoType.ONLINE:
+              return JSON.parse(this.cachedcontent)['status']['online'];
+            case ServerInfoType.PLAYER_COUNT:
+              return JSON.parse(this.cachedcontent)['status']['players']['online'];
+
+            default:
+              throw new Error(Messages.WRONG_SERVER_INFO_TYPE_EXCEPTION.replace('%name%', this.name).replace('%info-type%', this.infoType));
+          }
+        case ServerName.MUMBLE_CVP:
+          switch (this.infoType) {
+            case ServerInfoType.CHANNELS:
+              return JSON.parse(this.cachedcontent)['root']['channels'];
+            case ServerInfoType.MEMBERS_ONLINE:
+              return JSON.parse(this.cachedcontent)['users'];
+            case ServerInfoType.MUMBLE_X_CONNECT_URL:
+              return JSON.parse(this.cachedcontent)['x_connecturl'];
+            case ServerInfoType.SERVER_NAME:
+              return JSON.parse(this.cachedcontent)['name'];
+            case ServerInfoType.UPTIME:
+              return JSON.parse(this.cachedcontent)['uptime'];
+
+            default:
+              throw new Error(Messages.WRONG_SERVER_INFO_TYPE_EXCEPTION.replace('%name%', this.name).replace('%info-type%', this.infoType));
+          }
+        case ServerName.DISCORD:
+          switch (this.infoType) {
+            case ServerInfoType.CHANNELS:
+              return JSON.parse(this.cachedcontent)['channels'];
+            case ServerInfoType.DISCORD_ID:
+              return JSON.parse(this.cachedcontent)['id'];
+            case ServerInfoType.MEMBERS:
+              return JSON.parse(this.cachedcontent)['members'];
+            case ServerInfoType.SERVER_NAME:
+              return JSON.parse(this.cachedcontent)['name'];
+
+            default:
+              throw new Error(Messages.WRONG_SERVER_INFO_TYPE_EXCEPTION.replace('%name%', this.name).replace('%info-type%', this.infoType));
+          }
+        case ServerName.FRAMEWORK_STATUS:
+        case ServerName.API_STATUS:
+          switch (this.infoType) {
+            case ServerInfoType.ONLINE:
+              return JSON.parse(this.cachedcontent)['informations']['online'];
+            case ServerInfoType.VERSION:
+              return JSON.parse(this.cachedcontent)['informations']['version'];
+
+            default:
+              throw new Error(Messages.WRONG_SERVER_INFO_TYPE_EXCEPTION.replace('%name%', this.name).replace('%info-type%', this.infoType));
+          }
+
+        default:
+          throw new Error(Messages.UNKNOWN_SERVER_EXCEPTION);
+      }
+    }
+  }
+  /**
+	 * Get status URL corresponding to a server name
+   *
+	 * @return {string} Status server URL
+	 * @throw {Error} Thrown when an unknown server is specified
+	 */
+  get getServerStatusURL() {
+    switch (this.name) {
+      case ServerName.FIRE_SOFTWARES:
+        return Server.STATUS_0;
+      case ServerName.FIRE_NETWORK:
+        return Server.STATUS_1;
+      case ServerName.MUMBLE:
+        return Server.STATUS_2;
+      case ServerName.API_STATUS:
+        return Server.STATUS_API;
+      case ServerName.DISCORD_STATUS:
+        return Server.STATUS_DISCORD;
+      case ServerName.FRAMEWORK_STATUS:
+        return Server.STATUS_FRAMEWORK;
+      case ServerName.MUMBLE_CVP:
+        return Server.STATUS_MUMBLE_CVP;
+      default:
+        throw new Error(Messages.UNKNOWN_SERVER_EXCEPTION);
+    }
+  }
+}
+
+// -------------------------------------------
+//                    UTILS
+// -------------------------------------------
+/**
+ * Creates a Cross-origin Resource Sharing request with specified method and to
+ * specified URL
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} method Method used to send request (GET, POST, ...)
+ * @param {string} url URL to get content
+ * @param {boolean} async Makes the request asynchronous (some browsers mark synchronous mode as deprecated)
+ * @return {object} Response as XMLHttpRequest object or XDomainRequest object
+ */
+function createCORSRequest(method, url, async = true) {
   var xmlhttp = new XMLHttpRequest();
 
   if ("withCredentials" in xmlhttp) {
     // Check if the XMLHttpRequest object has a "withCredentials" property.
-    // "withCredentials" only exists on XMLHTTPRequest2 objects.
-    xmlhttp.open(method, url, true);
+    // "withCredentials" only exists on XMLHTTPRequest2 objects
+    xmlhttp.open(method, url, async);
     xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send();
   } else if (typeof XDomainRequest != "undefined") {
     // Otherwise, check if XDomainRequest.
-    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests
     xmlhttp = new XDomainRequest();
     xmlhttp.open(method, url);
     xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send();
-  } else {
-    // Otherwise, CORS is not supported by the browser.
-    xmlhttp = null;
-  }
+  } else xmlhttp = null;  // Otherwise, CORS is not supported by the browser
 
   return xmlhttp;
 }
-try {
-  var xhr = createCORSRequest("GET", FRAMEWORK_INFORMATIONS_URL);
+/**
+ * Check if a host is reachable
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} domain Domain to ping
+ * @return {object} True if host is reachable
+ */
+function hostReachable(domain) {
+  // Handle IE and more capable browsers
+  var xmlhttp = new (window.ActiveXObject || XMLHttpRequest)("Microsoft.XMLHTTP");
 
-  if (!xhr) {
-    errLog("Cross-Origin Resource Sharing isn't supported on your browser.\nSo we can't check for Fire-API-Web-Framework updates and maintenance state.");
-    throw new Error("Cross-Origin Resource Sharing not supported in this browser.");
-  }
+  // Open new request as a HEAD to the root hostname with a random param to
+  // bust the cache
+  xmlhttp.open("HEAD", domain + "/?rand=" + Math.floor((1 + Math.random()) * 0x10000), false);
 
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      var type = xhr.getResponseHeader('Content-Type');
-      if (type.indexOf("text") !== 1) {
-        if (JSON.parse(xhr.responseText)['informations']['version'] != API_VERSION)
-          log("Fire-API isn't up to date !\nLast version is " + JSON.parse(xhr.responseText)['informations']['version'] + ".");
-        else
-          log("Fire-API is up to date. Nice !");
-        if (JSON.parse(xhr.responseText)['informations']['online'] == false)
-          log("Fire-API is in maintenance, so some function will be bugged, be right back !");
-      }
-    }
+  // Issue request and handle response
+  try {
+    xmlhttp.send();
+    return (xmlhttp.status >= 200 && (xmlhttp.status < 300 || xmlhttp.status === 304));
+  } catch (error) {
+    return false;
   }
-} catch (e) {
-  errLog("Can't check for new Fire-API-Web-Framework updates or Fire-API-Web-Framework maintenance !\nPlease check that your Internet connection is enabled and that your firewall doesn't block access to \"api.fire-softwares.ga\" URL.");
-  console.error(e);
 }
+/**
+ * Calculate Champernowne String with specified digits
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {int} digits Number of digits to compute.
+ * @return {string} Champernowne String computed to specified digits
+ */
+function calculateChampernowneString(digits) {
+		var result = "";
+		var x = 1;
 
-// Copy to clipboard
+		while (result.length < digits)
+      if (result.length < digits) {
+				var current = 0;
+
+				while (current < x.toString().length)
+					if (result.length == digits) current = x.toString().length;
+					else {
+						result += "" + x.toString().substring(current, current + 1);
+						current++;
+					}
+
+				x++;
+			}
+
+		return "0." + result;
+}
+/**
+ * Detect client operating system
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {int} digits Number of digits to compute.
+ * @return {string} Corresponding Operating System
+ */
+function getClientOS() {
+  let name = "Unknown";   // Default OS is "Unknown"
+
+  // Recognize OS
+  if (navigator.userAgent.indexOf("Win") != -1) name = "Windows";
+  if (navigator.userAgent.indexOf("Mac") != -1) name = "Mac OS";
+  if (navigator.userAgent.indexOf("Linux") != -1) name = "Linux";
+  if (navigator.userAgent.indexOf("Android") != -1) name = "Android";
+  if (navigator.userAgent.indexOf("like Mac") != -1) name = "iOS";
+
+  return name;
+}
+/* Browser detection attributes (beta) */
+/**
+ * Returns true if browser is Opera (works only with 8.0+)
+ */
+var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+/**
+ * Returns true if browser is Firefox
+ */
+var isFirefox = typeof InstallTrigger !== 'undefined';
+/**
+ * Returns true if browser is Safari (works only with 3.0+)
+ */
+var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+/**
+ * Returns true if browser is Internet Explorer (works only with 6+)
+ */
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+/**
+ * Returns true if browser is Microsoft Edge (works only with 20+)
+ */
+var isEdge = !isIE && !!window.StyleMedia;
+/**
+ * Returns true if browser is Google Chrome
+ */
+var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+/**
+ * Returns true if Blink Engine is used
+ */
+var isBlink = (isChrome || isOpera) && !!window.CSS;
+/**
+ * Copy to clipboard
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} text The text to copy to clipboard
+ * @return {boolean} True if successfully copied to clipboard
+ */
 function fallbackCopyTextToClipboard(text) {
   var textArea = document.createElement("textarea");
-
   textArea.value = text;
+
   document.body.appendChild(textArea);
+
   textArea.focus();
   textArea.select();
 
   try {
     var successful = document.execCommand('copy');
 
-    if(successful)
-      log('Successfully copied "' + text + '" to clipboard.');
-    else
-      errLog('Unable to copy "' + text + '" to clipboard.');
-  } catch(err) {
-    errLog('Unable to copy text to clipboard.\n' + err);
-  }
+    document.body.removeChild(textArea);
 
-  document.body.removeChild(textArea);
+    return successful;
+  } catch (error) {
+    console.error(Messages.CANT_COPY_TO_CLIPBOARD_EXCEPTION + '\n' + error.message);
+  }
 }
+/**
+ * Copy to clipboard
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} text The text to copy to clipboard
+ * @return {boolean} True if successfully copied to clipboard
+ */
 function copyToClipboard(text) {
-  if(!navigator.clipboard) {
+  if (!navigator.clipboard) {
     fallbackCopyTextToClipboard(text);
     return;
   }
 
-  navigator.clipboard.writeText(text).then(function() {
-    log('Successfully copied "' + text + '" to clipboard.');
-  }, function(err) {
+  navigator.clipboard.writeText(text).then(function() {}, function(error) {
     fallbackCopyTextToClipboard(text);
   });
 }
-
-// Closing alert boxes
-var close = document.getElementsByClassName("alert-close");
-var i;
-// Loop all buttons
-for(i = 0; i < close.length; i++) {
-  // On click on a close button
-  close[i].onclick = function() {
-    // Getting parent element
-    var div = this.parentElement;
-
-    // Setting opacity to 0
-    div.style.opacity = "0";
-
-    setTimeout(function() {
-      div.style.display = "none";
-    }, 300);
-  };
-}
-
-// Dropdowns
-function dropdown(dropdownId) {
-  // Get the specified dropdown and showing it
-  document.getElementById(dropdownId).classList.toggle('dropdown-show');
-}
-// Closing dropdown if we click or mouse over outside of it
-window.onclick = function(event) {
-  if(!event.target.matches('.dropdown-button')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    var i;
-    for(i = 0; i < dropdowns.length; i++) {
-      var openedDropdowns = dropdowns[i];
-      if(openedDropdowns.classList.contains('dropdown-show')) {
-        openedDropdowns.classList.remove('dropdown-show');
-      }
-    }
-  }
-};
-
-// Modals
-function openModal(modalId) {
-  // Setting opacity to 1
-  document.getElementById(modalId).style.opacity = "1";
-  // Show modal
-  document.getElementById(modalId).style.display = "block";
-}
-function closeModal(modalId) {
-  // Setting opacity to 0
-  document.getElementById(modalId).style.opacity = "0";
-  // Planned destroy modal
-  setTimeout(function() {
-    document.getElementById(modalId).style.display = "none";
-  }, 300);
-}
-
-// Progress bars
-function getProgressValue(progressId) {
-  // Value returned as a percentage [0;1]
-  return parseInt(document.getElementById(progressId).getElementsByTagName('div')[0].style.width, 10) / 100;
-}
-function setProgressValue(progressId, value) {
-  if(value > 1) {
-    errLog("Value is > 100%.");
-  } else if(value < 0) {
-    errLog("Value is a negative percentage.");
-  } else {
-    // Set to the new percentage
-    try {
-      document.getElementById(progressId).getElementsByTagName('div')[0].style.width = (value * 100) + "%";
-    } catch(err) {
-      errLog("An error has occured :\n" + err);
-    }
-  }
-}
-
-// Sliders
-var slideIndex = 1;
-showSlides(slideIndex);
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("slider-item");
-  var dots = document.getElementsByClassName("slider-dot");
-
-  if(n > slides.length) {
-    slideIndex = 1;
-  }
-  if(n < 1) {
-    slideIndex = slides.length;
-  }
-  for(i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for(i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" slider-active", "");
-  }
-
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " slider-active";
-}
-
-// Syntaxic coloration code (based on W3Schools's one, https://www.w3schools.com/howto/howto_syntax_highlight.asp)
+/**
+ * Syntaxic coloration code (based on W3Schools's one,
+ * https://www.w3schools.com/howto/howto_syntax_highlight.asp)
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {object} element Element ID or element to apply syntaxic coloration on
+ * @param {boolean} autowidth Do code box automatically resize
+ * @param {string} mode "html", "css" or "js"
+ */
 function domSyntaxicColoration(element, autowidth, mode) {
   var lang = (mode || "html");
   var elementObj = (document.getElementById(element) || element);
@@ -291,32 +682,26 @@ function domSyntaxicColoration(element, autowidth, mode) {
   var jsnumbercolor = "var(--js-numbercolor)";
   var jspropertycolor = "var(--js-propertycolor)";
 
-  if(!autowidth) {
-    autowidth = false;
-  }
-  if(!lang) {
-    lang = "html";
-  }
-  if(lang == "html") {
-    elementTxt = htmlMode(elementTxt);
-  } else if(lang == "css") {
-    elementTxt = cssMode(elementTxt);
-  } else if(lang == "js") {
-    elementTxt = jsMode(elementTxt);
-  }
+  if (!autowidth) autowidth = false;
+
+  if (!lang) lang = "html";
+
+  if (lang == "html") elementTxt = htmlMode(elementTxt);
+  else if (lang == "css") elementTxt = cssMode(elementTxt);
+  else if (lang == "js") elementTxt = jsMode(elementTxt);
 
   elementObj.innerHTML = elementTxt;
 
   function extract(str, start, end, func, repl) {
     var s, e, d = "", a = [];
 
-    while(str.search(start) > -1) {
+    while (str.search(start) > -1) {
       s = str.search(start);
       e = str.indexOf(end, s);
-      if(e == -1) {
-        e = str.length;
-      }
-      if(repl) {
+
+      if (e == -1) e = str.length;
+
+      if (repl) {
         a.push(func(str.substring(s, e + (end.length))));
         str = str.substring(0, s) + repl + str.substr(e + (end.length));
       } else {
@@ -337,42 +722,41 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     rest = comment.rest;
 
-    while(rest.indexOf("&lt;") > -1) {
+    while (rest.indexOf("&lt;") > -1) {
       note = "";
       startpos = rest.indexOf("&lt;");
-      if(rest.substr(startpos, 9).toUpperCase() == "&LT;STYLE") {
-        note = "css";
-      }
-      if(rest.substr(startpos, 10).toUpperCase() == "&LT;SCRIPT") {
-        note = "javascript";
-      }
+
+      if (rest.substr(startpos, 9).toUpperCase() == "&LT;STYLE") note = "css";
+
+      if (rest.substr(startpos, 10).toUpperCase() == "&LT;SCRIPT") note = "javascript";
+
       endpos = rest.indexOf("&gt;", startpos);
-      if(endpos == -1) {
-        endpos = rest.length;
-      }
+
+      if (endpos == -1) endpos = rest.length;
+
       done += rest.substring(0, startpos);
       done += tagMode(rest.substring(startpos, endpos + 4));
       rest = rest.substr(endpos + 4);
-      if(note == "css") {
+
+      if (note == "css") {
         endpos = rest.indexOf("&lt;/style&gt;");
-        if(endpos > -1) {
+        if (endpos > -1) {
           done += cssMode(rest.substring(0, endpos));
           rest = rest.substr(endpos);
         }
       }
-      if(note == "javascript") {
+      if (note == "javascript") {
         endpos = rest.indexOf("&lt;/script&gt;");
-        if(endpos > -1) {
+        if (endpos > -1) {
           done += jsMode(rest.substring(0, endpos));
           rest = rest.substr(endpos);
         }
       }
     }
+
     rest = done + rest;
 
-    for(i = 0; i < comment.arr.length; i++) {
-        rest = rest.replace("FIREAPIHTMLCOMMENTPOS", comment.arr[i]);
-    }
+    for (i = 0; i < comment.arr.length; i++) rest = rest.replace("FIREAPIHTMLCOMMENTPOS", comment.arr[i]);
 
     return rest;
   }
@@ -380,23 +764,22 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function tagMode(txt) {
     var rest = txt, done = "", startpos, endpos, result;
 
-    while(rest.search(/(\s|<br>)/) > -1) {
+    while (rest.search(/(\s|<br>)/) > -1) {
       startpos = rest.search(/(\s|<br>)/);
       endpos = rest.indexOf("&gt;");
-      if(endpos == -1) {
-        endpos = rest.length;
-      }
+
+      if (endpos == -1) endpos = rest.length;
+
       done += rest.substring(0, startpos);
       done += attributeMode(rest.substring(startpos, endpos));
+
       rest = rest.substr(endpos);
     }
 
     result = done + rest;
     result = "<span style=color:" + tagcolor + ">&lt;</span>" + result.substring(4);
 
-    if(result.substr(result.length - 4, 4) == "&gt;") {
-      result = result.substring(0, result.length - 4) + "<span style=color:" + tagcolor + ">&gt;</span>";
-    }
+    if (result.substr(result.length - 4, 4) == "&gt;") result = result.substring(0, result.length - 4) + "<span style=color:" + tagcolor + ">&gt;</span>";
 
     return "<span style=color:" + tagnamecolor + ">" + result + "</span>";
   }
@@ -404,24 +787,18 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function attributeMode(txt) {
     var rest = txt, done = "", startpos, endpos, singlefnuttpos, doublefnuttpos, spacepos;
 
-    while(rest.indexOf("=") > -1) {
+    while (rest.indexOf("=") > -1) {
       endpos = -1;
       startpos = rest.indexOf("=");
       singlefnuttpos = rest.indexOf("'", startpos);
       doublefnuttpos = rest.indexOf('"', startpos);
       spacepos = rest.indexOf(" ", startpos + 2);
 
-      if(spacepos > -1 && (spacepos < singlefnuttpos || singlefnuttpos == -1) && (spacepos < doublefnuttpos || doublefnuttpos == -1)) {
-        endpos = rest.indexOf(" ", startpos);
-      } else if(doublefnuttpos > -1 && (doublefnuttpos < singlefnuttpos || singlefnuttpos == -1) && (doublefnuttpos < spacepos || spacepos == -1)) {
-        endpos = rest.indexOf('"', rest.indexOf('"', startpos) + 1);
-      } else if(singlefnuttpos > -1 && (singlefnuttpos < doublefnuttpos || doublefnuttpos == -1) && (singlefnuttpos < spacepos || spacepos == -1)) {
-        endpos = rest.indexOf("'", rest.indexOf("'", startpos) + 1);
-      }
+      if (spacepos > -1 && (spacepos < singlefnuttpos || singlefnuttpos == -1) && (spacepos < doublefnuttpos || doublefnuttpos == -1)) endpos = rest.indexOf(" ", startpos);
+      else if (doublefnuttpos > -1 && (doublefnuttpos < singlefnuttpos || singlefnuttpos == -1) && (doublefnuttpos < spacepos || spacepos == -1)) endpos = rest.indexOf('"', rest.indexOf('"', startpos) + 1);
+      else if (singlefnuttpos > -1 && (singlefnuttpos < doublefnuttpos || doublefnuttpos == -1) && (singlefnuttpos < spacepos || spacepos == -1)) endpos = rest.indexOf("'", rest.indexOf("'", startpos) + 1);
 
-      if (!endpos || endpos == -1 || endpos < startpos) {
-        endpos = rest.length;
-      }
+      if (!endpos || endpos == -1 || endpos < startpos) endpos = rest.length;
 
       done += rest.substring(0, startpos);
       done += attributeValueMode(rest.substring(startpos, endpos + 1));
@@ -446,37 +823,30 @@ function domSyntaxicColoration(element, autowidth, mode) {
     comment = new extract(rest, /\/\*/, "*/", commentMode, "FIREAPICSSCOMMENTPOS");
     rest = comment.rest;
 
-    while(rest.search("{") > -1) {
+    while (rest.search("{") > -1) {
       s = rest.search("{");
       midz = rest.substr(s + 1);
       cc = 1;
       c = 0;
-      for(i = 0; i < midz.length; i++) {
-        if(midz.substr(i, 1) == "{") {
+
+      for (i = 0; i < midz.length; i++) {
+        if (midz.substr(i, 1) == "{") {
           cc++;
           c++;
         }
-        if(midz.substr(i, 1) == "}") {
-          cc--;
-        }
-        if(cc == 0) {
-          break;
-        }
+
+        if (midz.substr(i, 1) == "}") cc--;
+
+        if (cc == 0) break;
       }
 
-      if(cc != 0) {
-        c = 0;
-      }
+      if (cc != 0) c = 0;
 
       e = s;
 
-      for(i = 0; i <= c; i++) {
-        e = rest.indexOf("}", e + 1);
-      }
+      for (i = 0; i <= c; i++) e = rest.indexOf("}", e + 1);
 
-      if(e == -1) {
-        e = rest.length;
-      }
+      if (e == -1) e = rest.length;
 
       done += rest.substring(0, s + 1);
       done += cssPropertyMode(rest.substring(s + 1, e));
@@ -488,9 +858,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
     rest = rest.replace(/{/g, "<span style=color:" + cssdelimitercolor + ">{</span>");
     rest = rest.replace(/}/g, "<span style=color:" + cssdelimitercolor + ">}</span>");
 
-    for(i = 0; i < comment.arr.length; i++) {
-        rest = rest.replace("FIREAPICSSCOMMENTPOS", comment.arr[i]);
-    }
+    for (i = 0; i < comment.arr.length; i++) rest = rest.replace("FIREAPICSSCOMMENTPOS", comment.arr[i]);
 
     return "<span style=color:" + cssselectorcolor + ">" + rest + "</span>";
   }
@@ -498,27 +866,24 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function cssPropertyMode(txt) {
     var rest = txt, done = "", s, e, n, loop;
 
-    if(rest.indexOf("{") > -1) {
-      return cssMode(rest);
-    }
+    if (rest.indexOf("{") > -1) return cssMode(rest);
 
-    while(rest.search(":") > -1) {
+    while (rest.search(":") > -1) {
       s = rest.search(":");
       loop = true;
       n = s;
 
-      while(loop == true) {
+      while (loop) {
         loop = false;
         e = rest.indexOf(";", n);
+
         if (rest.substring(e - 5, e + 1) == "&nbsp;") {
           loop = true;
           n = e + 1;
         }
       }
 
-      if(e == -1) {
-        e = rest.length;
-      }
+      if (e == -1) e = rest.length;
 
       done += rest.substring(0, s);
       done += cssPropertyValueMode(rest.substring(s, e + 1));
@@ -534,7 +899,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     rest = "<span style=color:" + cssdelimitercolor + ">:</span>" + rest.substring(1);
 
-    while(rest.search(/!important/i) > -1) {
+    while (rest.search(/!important/i) > -1) {
       s = rest.search(/!important/i);
 
       done += rest.substring(0, s);
@@ -545,9 +910,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     result = done + rest;
 
-    if(result.substr(result.length - 1, 1) == ";" && result.substr(result.length - 6, 6) != "&nbsp;" && result.substr(result.length - 4, 4) != "&lt;" && result.substr(result.length - 4, 4) != "&gt;" && result.substr(result.length - 5, 5) != "&amp;") {
-      result = result.substring(0, result.length - 1) + "<span style=color:" + cssdelimitercolor + ">;</span>";
-    }
+    if (result.substr(result.length - 1, 1) == ";" && result.substr(result.length - 6, 6) != "&nbsp;" && result.substr(result.length - 4, 4) != "&lt;" && result.substr(result.length - 4, 4) != "&gt;" && result.substr(result.length - 5, 5) != "&amp;") result = result.substring(0, result.length - 1) + "<span style=color:" + cssdelimitercolor + ">;</span>";
 
     return "<span style=color:" + csspropertyvaluecolor + ">" + result + "</span>";
   }
@@ -559,10 +922,10 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function jsMode(txt) {
     var rest = txt, done = "", esc = [], i, cc, tt = "", sfnuttpos, dfnuttpos, compos, comlinepos, keywordpos, numpos, mypos, dotpos, y;
 
-    for(i = 0; i < rest.length; i++) {
+    for (i = 0; i < rest.length; i++) {
       cc = rest.substr(i, 1);
 
-      if(cc == "\\") {
+      if (cc == "\\") {
         esc.push(rest.substr(i, 2));
         cc = "FIREAPIJSESCAPE";
         i++;
@@ -575,7 +938,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     y = 1;
 
-    while(y == 1) {
+    while (y == 1) {
       sfnuttpos = getPos(rest, "'", "'", jsStringMode);
       dfnuttpos = getPos(rest, '"', '"', jsStringMode);
       compos = getPos(rest, /\/\*/, "*/", commentMode);
@@ -584,16 +947,13 @@ function domSyntaxicColoration(element, autowidth, mode) {
       keywordpos = getKeywordPos("js", rest, jsKeywordMode);
       dotpos = getDotPos(rest, jsPropertyMode);
 
-      if(Math.max(numpos[0], sfnuttpos[0], dfnuttpos[0], compos[0], comlinepos[0], keywordpos[0], dotpos[0]) == -1) {
-        break;
-      }
+      if (Math.max(numpos[0], sfnuttpos[0], dfnuttpos[0], compos[0], comlinepos[0], keywordpos[0], dotpos[0]) == -1) break;
 
       mypos = getMinPos(numpos, sfnuttpos, dfnuttpos, compos, comlinepos, keywordpos, dotpos);
 
-      if(mypos[0] == -1) {
-        break;
-      }
-      if(mypos[0] > -1) {
+      if (mypos[0] == -1) break;
+
+      if (mypos[0] > -1) {
         done += rest.substring(0, mypos[0]);
         done += mypos[2](rest.substring(mypos[0], mypos[1]));
 
@@ -603,9 +963,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     rest = done + rest;
 
-    for(i = 0; i < esc.length; i++) {
-      rest = rest.replace("FIREAPIJSESCAPE", esc[i]);
-    }
+    for (i = 0; i < esc.length; i++) rest = rest.replace("FIREAPIJSESCAPE", esc[i]);
 
     return "<span style=color:" + jscolor + ">" + rest + "</span>";
   }
@@ -631,12 +989,12 @@ function domSyntaxicColoration(element, autowidth, mode) {
 
     s = txt.indexOf(".");
 
-    if(s > -1) {
+    if (s > -1) {
       x = txt.substr(s + 1);
-      for(j = 0; j < x.length; j++) {
+      for (j = 0; j < x.length; j++) {
         cc = x[j];
-        for(i = 0; i < arr.length; i++) {
-          if(cc.indexOf(arr[i]) > -1) {
+        for (i = 0; i < arr.length; i++) {
+          if (cc.indexOf(arr[i]) > -1) {
             e = j;
 
             return [s + 1, e + s + 1, func];
@@ -651,17 +1009,9 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function getMinPos() {
     var i, arr = [];
 
-    for(i = 0; i < arguments.length; i++) {
-      if(arguments[i][0] > -1) {
-        if(arr.length == 0 || arguments[i][0] < arr[0]) {
-          arr = arguments[i];
-        }
-      }
-    }
+    for (i = 0; i < arguments.length; i++) if (arguments[i][0] > -1) if (arr.length == 0 || arguments[i][0] < arr[0]) arr = arguments[i];
 
-    if (arr.length == 0) {
-      arr = arguments[i];
-    }
+    if (arr.length == 0) arr = arguments[i];
 
     return arr;
   }
@@ -669,24 +1019,22 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function getKeywordPos(typ, txt, func) {
     var words, i, pos, rpos = -1, rpos2 = -1, patt;
 
-    if(typ == "js") {
+    if (typ == "js") {
       words = ["abstract","arguments","boolean","break","byte","case","catch","char","class","const","continue","debugger","default","delete",
       "do","double","else","enum","eval","export","extends","false","final","finally","float","for","function","goto","if","implements","import",
       "in","instanceof","int","interface","let","long","NaN","native","new","null","package","private","protected","public","return","short","static",
       "super","switch","synchronized","this","throw","throws","transient","true","try","typeof","var","void","volatile","while","with","yield"];
     }
 
-    for(i = 0; i < words.length; i++) {
+    for (i = 0; i < words.length; i++) {
       pos = txt.indexOf(words[i]);
 
-      if(pos > -1) {
+      if (pos > -1) {
         patt = /\W/g;
 
-        if(txt.substr(pos + words[i].length,1).match(patt) && txt.substr(pos - 1,1).match(patt)) {
-          if(pos > -1 && (rpos == -1 || pos < rpos)) {
-            rpos = pos;
-            rpos2 = rpos + words[i].length;
-          }
+        if (txt.substr(pos + words[i].length,1).match(patt) && txt.substr(pos - 1,1).match(patt)) if (pos > -1 && (rpos == -1 || pos < rpos)) {
+          rpos = pos;
+          rpos2 = rpos + words[i].length;
         }
       }
     }
@@ -700,9 +1048,7 @@ function domSyntaxicColoration(element, autowidth, mode) {
     s = txt.search(start);
     e = txt.indexOf(end, s + (end.length));
 
-    if(e == -1) {
-      e = txt.length;
-    }
+    if (e == -1) e = txt.length;
 
     return [s, e + (end.length), func];
   }
@@ -710,238 +1056,47 @@ function domSyntaxicColoration(element, autowidth, mode) {
   function getNumPos(txt, func) {
     var arr = ["<br>", " ", ";", "(", "+", ")", "[", "]", ",", "&", ":", "{", "}", "/" ,"-", "*", "|", "%", "="], i, j, c, startpos = 0, endpos, word;
 
-    for (i = 0; i < txt.length; i++) {
-      for (j = 0; j < arr.length; j++) {
+    for (i = 0; i < txt.length; i++) for (j = 0; j < arr.length; j++) {
         c = txt.substr(i, arr[j].length);
         if (c == arr[j]) {
-          if (c == "-" && (txt.substr(i - 1, 1) == "e" || txt.substr(i - 1, 1) == "E")) {
-            continue;
-          }
+          if (c == "-" && (txt.substr(i - 1, 1) == "e" || txt.substr(i - 1, 1) == "E")) continue;
 
           endpos = i;
 
           if (startpos < endpos) {
             word = txt.substring(startpos, endpos);
 
-            if (!isNaN(word)) {
-              return [startpos, endpos, func];
-            }
+            if (!isNaN(word)) return [startpos, endpos, func];
           }
+
           i += arr[j].length;
+
           startpos = i;
+
           i -= 1;
 
           break;
         }
       }
-    }
 
     return [-1, -1, func];
   }
 
-  if(autowidth == true) {
-    preformattedCodeAutoWidth(element);
-  }
+  if (autowidth) preformattedCodeAutoWidth(element);
 }
 function preformattedCodeAutoWidth(elementId) {
   document.getElementById(elementId).style.width = (parseInt(window.getComputedStyle(document.getElementById(elementId).getElementsByClassName("code-container")[0], null).width.replace(/px/, "")) + 20) + "px";
 }
-
-// Fire-API utils
-function setApplicationName(name) {
-  API_APPLICATION_NAME = name;
-  log("Successfully changed application name.");
+/**
+ * Image cursor following text animation
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {object} element Element ID or element to apply syntaxic coloration on
+ * @param {object} e Event (need to map function to window.onmousemove)
+ * @param {float} mode "html", "css" or "js"
+ */
+function icfr(element, e, sensivity = 1) {
+  element.style.backgroundPosition = ((4 * e.clientX) / (570 / sensivity)) + 40 + "%" + ((4 * e.clientY) / (570 / sensivity)) + 50 + "%";
 }
-function calculateChampernowneString(digits) {
-		var result = "";
-		var x = 1;
-
-		while(result.length < digits) {
-			if(result.length < digits) {
-				var current = 0;
-
-				while(current < x.toString().length) {
-					if(result.length == digits) {
-						current = x.toString().length;
-					} else {
-						result += "" + x.toString().substring(current, current + 1);
-						current++;
-					}
-				}
-
-				x++;
-			}
-		}
-
-		return "0." + result;
-}
-function calculateEuler(iterations) {
-	var result = 1, f = 1;
-
-  for(var i = 1; i <= iterations; i++) {
-    f *= (1.0 / i);
-
-    if(f <= 0) {
-      break;
-    }
-
-    result += f;
-  }
-
-	// Example :  2 + 1/(1*2) + 1/(1*2*3) + 1/(1*2*3*4) etc..
-	return result;
-}
-function secondDegreePolynomialParabolaVertexGetAlpha(a, b) {
-	return -b / (2 * a);
-}
-function homographicForbiddenValue(c, d) {
-	return -d / c;
-}
-
-// Text typing text animation
-var TxtType = function(elmnt, txtToType, period) {
-  this.txtToType = txtToType;
-  this.elmnt = elmnt;
-  this.loopNum = 0;
-  this.period = parseInt(period, 10) || 2000;
-  this.txt = '';
-  this.tick();
-  this.isDeleting = false;
-};
-TxtType.prototype.tick = function() {
-  var i = this.loopNum % this.txtToType.length;
-  var fullTxt = this.txtToType[i];
-
-  if(this.isDeleting) {
-    this.txt = fullTxt.substring(0, this.txt.length - 1);
-  } else {
-    this.txt = fullTxt.substring(0, this.txt.length + 1);
-  }
-
-  this.elmnt.innerHTML = '<span class="wrap">' + this.txt + '</span>';
-
-  var that = this;
-  var delta = 300 - Math.random() * 100;
-
-  if(this.isDeleting) {
-    delta /= 2;
-  }
-
-  if(!this.isDeleting && this.txt === fullTxt) {
-    delta = this.period;
-    this.isDeleting = true;
-  } else if(this.isDeleting && this.txt === '') {
-    this.isDeleting = false;
-    this.loopNum++;
-    delta = 500;
-  }
-
-  setTimeout(function() {
-    that.tick();
-  }, delta);
-};
-
-// Console typing text animation
-function consoleTypingAnimation(id, caret, words, colors, period, caretperiod) {
-  if(colors === undefined)
-    colors = ['#fff'];
-  if(period === undefined)
-    period = 1000;
-  if(caretperiod === undefined)
-    caretperiod = 0;
-
-  var con = caret;
-  var elmnt = document.getElementById(id);
-  var letterCount = 1;
-  var waiting = false;
-  var x = 1;
-  var basichtml = elmnt.innerHTML;
-
-  elmnt.setAttribute('style', 'color: ' + colors[0]);
-
-  window.setInterval(function() {
-    if(letterCount === 0 && waiting === false) {
-      waiting = true;
-
-      elmnt.innerHTML = words[0].substring(0, letterCount);
-
-      window.setTimeout(function() {
-        var usedColor = colors.shift();
-        colors.push(usedColor);
-
-        var usedWord = words.shift();
-        words.push(usedWord);
-
-        x = 1;
-
-        elmnt.setAttribute('style', 'color: ' + colors[0]);
-
-        letterCount += x;
-        waiting = false;
-      }, 1000);
-    } else if(letterCount === words[0].length + 1 && waiting === false) {
-      waiting = true;
-
-      document.getElementById(elmnt.parentNode.getElementsByClassName("console-caret")[0].id).setAttribute('style', '-webkit-animation: console-caret ' + caretperiod + 'ms infinite;-moz-animation: console-caret ' + caretperiod + 'ms infinite;-o-animation: console-caret ' + caretperiod + 'ms infinite;animation: console-caret ' + caretperiod + 'ms infinite;');
-
-      window.setTimeout(function() {
-        x = -1;
-        letterCount += x;
-        waiting = false;
-      }, period);
-    } else if(waiting === false) {
-      elmnt.innerHTML = words[0].substring(0, letterCount) + basichtml;
-      letterCount += x;
-    }
-  }, 120);
-}
-
-// Image cursor following text animation
-function icfr(elmnt, e, sensivity) {
-  if(sensivity === undefined)
-    sensivity = 1;
-  elmnt.style.backgroundPosition = ((4 * e.clientX) / (570 / sensivity)) + 40 + "%" + ((4 * e.clientY) / (570 / sensivity)) + 50 + "%";
-}
-
-// Loading then send text animation
-
-
-// On load function
-window.onload = function() {
-  var elements = document.getElementsByClassName('text-animation-typing');
-
-  for(var i = 0; i < elements.length; i++) {
-    var txtToType = elements[i].getAttribute('data-words');
-    var period = elements[i].getAttribute('data-cooldown');
-
-    if(txtToType) {
-      new TxtType(elements[i], JSON.parse(txtToType), period);
-    }
-  }
-
-  var css = document.createElement("style");
-
-  css.type = "text/css";
-  css.innerHTML = ".text-animation-typing > .wrap { border-right: 0.08em solid var(--caret-color) }";
-
-  document.body.appendChild(css);
-
-  elements = document.getElementsByClassName('console-container');
-
-  for(var j = 0; j < elements.length; j++) {
-    var txtToType = elements[j].getAttribute('data-words');
-    var period = elements[j].getAttribute('data-cooldown');
-    var colors = elements[j].getAttribute('data-colors');
-    var caretperiod = elements[j].getAttribute('data-caret-period');
-
-    if(txtToType) {
-      consoleTypingAnimation(elements[j].id, elements[j].parentNode.getElementsByClassName("console-caret")[0], JSON.parse(txtToType), JSON.parse(colors), period, caretperiod);
-    }
-  }
-
-  elements = document.getElementsByClassName('loading-text-animation');
-
-  for(var lta = 0; lta < elements.length; lta++) {
-    elements[lta].setAttribute('data-text', elements[lta].innerHTML);
-  }
-};
