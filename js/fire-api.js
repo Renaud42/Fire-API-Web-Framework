@@ -651,6 +651,98 @@ function copyToClipboard(text) {
     fallbackCopyTextToClipboard(text);
   });
 }
+
+
+// -------------------------------------------
+// FIRE-API WEB-FRAMEWORK COMPONENTS JS HELPER
+// -------------------------------------------
+
+/* Alert closing handler */
+var ALERT_BOXES_REFRESH_RATE = 100;             // Refresh rate in milliseconds
+setInterval(function() {
+  var close = document.getElementsByClassName("alert-close");
+
+  for (let i = 0; i < close.length; i++)        // Loop all buttons
+    close[i].onclick = function() {             // On click on a close button
+      var div = this.parentElement;             // Getting parent element
+
+      div.style.opacity = "0";                  // Setting opacity to 0
+
+      setTimeout(function() {
+        div.style.display = "none";       // Then waiting animation time to vanish
+      }, 300);
+    };
+}, ALERT_BOXES_REFRESH_RATE);
+
+/* Dropdown handler */
+/**
+ * Toggles a dropdown
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} dropdownId Dropdown content ID (class .dropdown-content)
+ */
+function dropdown(dropdownId) {
+  if (document.getElementById(dropdownId).classList.contains('dropdown-show')) {
+    // Setting opacity to 0
+    document.getElementById(dropdownId).style.opacity = "0";
+
+    setTimeout(function() {
+      // Then waiting animation time to vanish
+      document.getElementById(dropdownId).classList.toggle("dropdown-show");
+    }, 200);
+  } else {
+    document.getElementById(dropdownId).classList.toggle("dropdown-show");
+    // Delaying because little delay the first time
+    setTimeout(function() {
+      document.getElementById(dropdownId).style.opacity = "1";
+    }, 10);
+  }
+}
+// Close all the dropdown menus if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropdown-button')) {
+    let dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+      let openedDropdown = dropdowns[i];
+
+      if (openedDropdown.classList.contains('dropdown-show')) {
+        openedDropdown.style.opacity = "0"; // Setting opacity to 0
+        setTimeout(function() {
+          // Then waiting animation time to vanish
+          openedDropdown.classList.remove('dropdown-show');
+        }, 200);
+      }
+    }
+  }
+}
+
+/* Sliders handler */
+/* Warning : only 1 slider per page */
+var slideIndex = 1;
+showSlides(slideIndex);
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("slider-item");
+  let dots = document.getElementsByClassName("slider-dot");
+
+  if (n > slides.length) slideIndex = 1;
+  if (n < 1) slideIndex = slides.length;
+
+  for (i = 0; i < slides.length; i++) slides[i].style.display = "none";
+  for (i = 0; i < dots.length; i++) dots[i].className = dots[i].className.replace(" slider-active", "");
+
+  slides[slideIndex - 1].style.display = "block";
+  dots[slideIndex - 1].className += " slider-active";
+}
+
 /**
  * Syntaxic coloration code (based on W3Schools's one,
  * https://www.w3schools.com/howto/howto_syntax_highlight.asp)
