@@ -259,16 +259,16 @@ pre * {
   --primary-alert-close: black;
   --secondary-alert-close: rgba(96, 96, 96);
 
-  /* BUTTONS */
-  /* Buttons backgrounds */
-  --primary-button-bg-color: white;
-  --secondary-button-bg-color: white;
-  /* Buttons font color */
-  --primary-button-font-color: black;
-  --secondary-button-font-color: rgba(96, 96, 96);
-
   /* DROPDOWNS */
   --dropdown-content-width: 100%;
+
+  /* INPUTS */
+  /* Inputs backgrounds */
+  --primary-input-bg-color: white;
+  --secondary-input-bg-color: white;
+  /* Inputs font color */
+  --primary-input-font-color: black;
+  --secondary-input-font-color: rgba(96, 96, 96);
 
   /* LINKS THEME DEFAULTS */
   /* Link selected color */
@@ -344,12 +344,12 @@ pre * {
   /* Alert close */
   --primary-alert-close: black;
   --secondary-alert-close: rgba(96, 96, 96);
-  /* Buttons backgrounds */
-  --primary-button-bg-color: white;
-  --secondary-button-bg-color: whitesmoke;
-  /* Buttons font color */
-  --primary-button-font-color: black;
-  --secondary-button-font-color: rgba(96, 96, 96);
+  /* Inputs backgrounds */
+  --primary-input-bg-color: white;
+  --secondary-input-bg-color: whitesmoke;
+  /* Inputs font color */
+  --primary-input-font-color: black;
+  --secondary-input-font-color: rgba(96, 96, 96);
   /* Background on hover color */
   --primary-bg-hover-color: whitesmoke;
   --secondary-bg-hover-color: #eee;
@@ -382,14 +382,14 @@ pre * {
   --primary-underline-color: #1976d2;
   --primary-font-active-color: #1976d2;
   --primary-font-hover-color: #1976d2;
-  --primary-button-font-color: #1976d2;
+  --primary-input-font-color: #1976d2;
   /* Secondary colors */
   --secondary-font-color: #3498db;
   --secondary-selected-color: #3498db;
   --secondary-underline-color: #3498db;
   --secondary-font-active-color: #3498db;
   --secondary-font-hover-color: #3498db;
-  --secondary-button-font-color: #3498db;
+  --secondary-input-font-color: #3498db;
 }
 .light-green, .light-green * {
   /* Primary colors */
@@ -398,14 +398,14 @@ pre * {
   --primary-underline-color: #388e3c;
   --primary-font-active-color: #388e3c;
   --primary-font-hover-color: #388e3c;
-  --primary-button-font-color: #388e3c;
+  --primary-input-font-color: #388e3c;
   /* Secondary colors */
   --secondary-font-color: #2ecc71;
   --secondary-selected-color: #2ecc71;
   --secondary-underline-color: #2ecc71;
   --secondary-font-active-color: #2ecc71;
   --secondary-font-hover-color: #2ecc71;
-  --secondary-button-font-color: #2ecc71;
+  --secondary-input-font-color: #2ecc71;
 }
 .light-red, .light-red * {
   /* Primary colors */
@@ -414,14 +414,14 @@ pre * {
   --primary-underline-color: #d32f2f;
   --primary-font-active-color: #d32f2f;
   --primary-font-hover-color: #d32f2f;
-  --primary-button-font-color: #d32f2f;
+  --primary-input-font-color: #d32f2f;
   /* Secondary colors */
   --secondary-font-color: #ff7675;
   --secondary-selected-color: #ff7675;
   --secondary-underline-color: #ff7675;
   --secondary-font-active-color: #ff7675;
   --secondary-font-hover-color: #ff7675;
-  --secondary-button-font-color: #ff7675;
+  --secondary-input-font-color: #ff7675;
 }
 .light-yellow, .light-yellow * {
   /* Primary colors */
@@ -430,14 +430,14 @@ pre * {
   --primary-underline-color: #fbc02d;
   --primary-font-active-color: #fbc02d;
   --primary-font-hover-color: #fbc02d;
-  --primary-button-font-color: #fbc02d;
+  --primary-input-font-color: #fbc02d;
   /* Secondary colors */
   --secondary-font-color: #fdcb6e;
   --secondary-selected-color: #fdcb6e;
   --secondary-underline-color: #fdcb6e;
   --secondary-font-active-color: #fdcb6e;
   --secondary-font-hover-color: #fdcb6e;
-  --secondary-button-font-color: #fdcb6e;
+  --secondary-input-font-color: #fdcb6e;
 }
 .light-purple, .light-purple * {
   /* Primary colors */
@@ -446,14 +446,14 @@ pre * {
   --primary-underline-color: #8e44ad;
   --primary-font-active-color: #8e44ad;
   --primary-font-hover-color: #8e44ad;
-  --primary-button-font-color: #8e44ad;
+  --primary-input-font-color: #8e44ad;
   /* Secondary colors */
   --secondary-font-color: #6c5ce7;
   --secondary-selected-color: #6c5ce7;
   --secondary-underline-color: #6c5ce7;
   --secondary-font-active-color: #6c5ce7;
   --secondary-font-hover-color: #6c5ce7;
-  --secondary-button-font-color: #6c5ce7;
+  --secondary-input-font-color: #6c5ce7;
 }
 .light-black, .light-black * {
   /* Primary colors */
@@ -462,18 +462,18 @@ pre * {
   --primary-underline-color: black;
   --primary-font-active-color: black;
   --primary-font-hover-color: black;
-  --primary-button-font-color: black;
+  --primary-input-font-color: black;
   /* Secondary colors */
   --secondary-font-color: rgba(96, 96, 96);
   --secondary-selected-color: rgba(96, 96, 96);
   --secondary-underline-color: rgba(96, 96, 96);
   --secondary-font-active-color: rgba(96, 96, 96);
   --secondary-font-hover-color: rgba(96, 96, 96);
-  --secondary-button-font-color: rgba(96, 96, 96);
+  --secondary-input-font-color: rgba(96, 96, 96);
 }
 /* Light alert boxes, badges & inputs */
-[class^="light-"].alert, [class^="light-"].badge, [class^="light-"][class$="-input"] {
-  background: white;
+[class^="light-"].alert, [class^="light-"].badge, [class^="light-"][class$="-input"], [class^="light-"].progress, [class^="light-"].progressbar {
+  background: var(--primary-input-bg-color);
 }
 
 /* Dark theme */
@@ -487,12 +487,12 @@ pre * {
   /* Alert close */
   --primary-alert-close: white;
   --secondary-alert-close: white;
-  /* Buttons backgrounds */
-  --primary-button-bg-color: black;
-  --secondary-button-bg-color: rgba(96, 96, 96);
-  /* Buttons font color */
-  --primary-button-font-color: white;
-  --secondary-button-font-color: white;
+  /* Inputs backgrounds */
+  --primary-input-bg-color: black;
+  --secondary-input-bg-color: rgba(96, 96, 96);
+  /* Inputs font color */
+  --primary-input-font-color: white;
+  --secondary-input-font-color: white;
   /* Background on hover color */
   --primary-bg-hover-color: #505050;
   --secondary-bg-hover-color: #898989;
@@ -521,36 +521,36 @@ pre * {
 .dark-blue {
   /* Primary colors */
   --primary-bg-color: #1976d2;
-  --primary-button-bg-color: #1976d2;
+  --primary-input-bg-color: #1976d2;
   --primary-bg-hover-color: #2196f3;
   --primary-bg-active-color: #1565c0;
   /* Secondary colors */
   --secondary-bg-color: #3498db;
-  --secondary-button-bg-color: #3498db;
+  --secondary-input-bg-color: #3498db;
   --secondary-bg-hover-color: #4aa3df;
   --secondary-bg-active-color: #217dbb;
 }
 .dark-green {
   /* Primary colors */
   --primary-bg-color: #388e3c;
-  --primary-button-bg-color: #388e3c;
+  --primary-input-bg-color: #388e3c;
   --primary-bg-hover-color: #4caf50;
   --primary-bg-active-color: #2e7d32;
   /* Secondary colors */
   --secondary-bg-color: #2ecc71;
-  --secondary-button-bg-color: #2ecc71;
+  --secondary-input-bg-color: #2ecc71;
   --secondary-bg-hover-color: #54d98c;
   --secondary-bg-active-color: #29b765;
 }
 .dark-red {
   /* Primary colors */
   --primary-bg-color: #d32f2f;
-  --primary-button-bg-color: #d32f2f;
+  --primary-input-bg-color: #d32f2f;
   --primary-bg-hover-color: #f44336;
   --primary-bg-active-color: #b71c1c;
   /* Secondary colors */
   --secondary-bg-color: #ff7675;
-  --secondary-button-bg-color: #ff7675;
+  --secondary-input-bg-color: #ff7675;
   --secondary-bg-hover-color: #ff8f8f;
   --secondary-bg-active-color: #ff4342;
 }
@@ -558,8 +558,8 @@ pre * {
   /* Primary colors */
   --primary-bg-color: #fbc02d;
   --primary-font-color: black;
-  --primary-button-bg-color: #fbc02d;
-  --primary-button-font-color: black;
+  --primary-input-bg-color: #fbc02d;
+  --primary-input-font-color: black;
   --primary-bg-hover-color: #ffd54f;
   --primary-bg-active-color: #ffa000;
   --primary-font-hover-color: black;
@@ -567,8 +567,8 @@ pre * {
   /* Secondary colors */
   --secondary-bg-color: #fdcb6e;
   --secondary-font-color: black;
-  --secondary-button-bg-color: #fdcb6e;
-  --secondary-button-font-color: black;
+  --secondary-input-bg-color: #fdcb6e;
+  --secondary-input-font-color: black;
   --secondary-bg-hover-color: #ffd689;
   --secondary-bg-active-color: #fcb93c;
   --secondary-font-hover-color: black;
@@ -577,24 +577,24 @@ pre * {
 .dark-purple {
   /* Primary colors */
   --primary-bg-color: #8e44ad;
-  --primary-button-bg-color: #8e44ad;
+  --primary-input-bg-color: #8e44ad;
   --primary-bg-hover-color: #a361bf;
   --primary-bg-active-color: #703688;
   /* Secondary colors */
   --secondary-bg-color: #6c5ce7;
-  --secondary-button-bg-color: #6c5ce7;
+  --secondary-input-bg-color: #6c5ce7;
   --secondary-bg-hover-color: #8072ea;
   --secondary-bg-active-color: #5846e4;
 }
 .dark-black {
   /* Primary colors */
   --primary-bg-color: black;
-  --primary-button-bg-color: black;
+  --primary-input-bg-color: black;
   --primary-bg-hover-color: #505050;
   --primary-bg-active-color: #202020;
   /* Secondary colors */
   --secondary-bg-color: rgba(96, 96, 96);
-  --secondary-button-bg-color: rgba(96, 96, 96);
+  --secondary-input-bg-color: rgba(96, 96, 96);
   --secondary-bg-hover-color: #898989;
   --secondary-bg-active-color: #595959;
 }
@@ -613,12 +613,12 @@ pre * {
 
 /* Buttons and dropdowns */
 .primary.button, .primary.dropdown {
-  background: var(--primary-button-bg-color);
-  color: var(--primary-button-font-color);
+  background: var(--primary-input-bg-color);
+  color: var(--primary-input-font-color);
 }
 .secondary.button, .secondary.dropdown {
-  background: var(--secondary-button-bg-color);
-  color: var(--secondary-button-font-color);
+  background: var(--secondary-input-bg-color);
+  color: var(--secondary-input-font-color);
 }
 .primary.button:hover, .primary.dropdown:hover {
   background: var(--primary-bg-hover-color);
@@ -635,6 +635,21 @@ pre * {
 .secondary.button:active, .secondary.dropdown:active {
   background: var(--secondary-bg-active-color);
   color: var(--secondary-font-active-color);
+}
+.primary.button a {
+  color: var(--primary-font-active-color);
+}
+.secondary.button a {
+  color: var(--secondary-font-active-color);
+}
+
+.primary.navbar-horizontal, .primary.navbar-vertical {
+  background: var(--primary-input-bg-color);
+  color: var(--primary-input-font-color);
+}
+.secondary.navbar-horizontal, .primary.navbar-vertical {
+  background: var(--secondary-input-bg-color);
+  color: var(--primary-input-font-color);
 }
 
 /* Fix for text commonly used HTML tags */
@@ -1406,63 +1421,20 @@ ul.navbar-vertical {
   transition: .3s;
   z-index: 1;
 }
-.dark-blue.tooltip-content.tooltip-content::after {
-  border-top-color: #1976d2;
+.primary.tooltip-content::after {
+  border-top-color: var(--primary-bg-color);
 }
-.dark-green.tooltip-content.tooltip-content::after {
-  border-top-color: #388e3c;
-}
-.dark-red.tooltip-content.tooltip-content::after {
-  border-top-color: #d32f2f;
-}
-.dark-yellow.tooltip-content.tooltip-content::after {
-  border-top-color: #fbc02d;
-}
-.dark-black.tooltip-content.tooltip-content::after {
-  border-top-color: #212121;
-}
-[class^="light-"].tooltip-content.tooltip-content::after {
-  border-top-color: white;
+.secondary.tooltip-content::after {
+  border-top-color: var(--secondary-bg-color);
 }
 
 /* Text animations */
 :root {
-  --caret-color: black;
-  --loading-color: #388e3c;
   --sbe-stroke-color-1: #4D163D;
   --sbe-stroke-color-2: #840037;
   --sbe-stroke-color-3: #BD0034;
   --sbe-stroke-color-4: #BD0034;
   --sbe-stroke-color-5: #FDB731;
-}
-.caret-animated > .wrap {
-  -webkit-animation: caret 1s infinite;
-  -moz-animation: caret 1s infinite;
-  -o-animation: caret 1s infinite;
-  animation: caret 1s infinite;
-}
-.letters-animated > .wrap {
-  transition: content 0.5s linear;
-}
-.console-container {
-  bottom: 0;
-  display: block;
-  font-family: monospace;
-  font-size: 4em;
-  height: 1em;
-  left: 0;
-  right: 0;
-  top: 0;
-  width: auto;
-}
-.console-caret {
-  /* In case it don't works with JavaScript, waiting for a fix */
-  animation: console-caret .4s infinite;
-  color: white;
-  display: inline-block;
-  left: 10px;
-  position: relative;
-  top: -0.14em;
 }
 .svg-bordermove-effect {
   display: block;
@@ -1496,28 +1468,14 @@ ul.navbar-vertical {
   animation-delay: -5s;
 	stroke: var(--sbe-stroke-color-5);
 }
+
+/* Image cursor following text */
 .image-cursor-following-text {
   -webkit-background-clip: text !important;
   background-clip: text !important;
   background-position: 40% 50%;
   color: transparent;
   position: relative;
-}
-.loading-text-animation {
-  animation: send 2s;
-  color: #d4d4d4;
-  display: inline-block;
-  margin: 0 auto;
-  opacity: 0;
-  position: relative;
-}
-.loading-text-animation::before {
-  animation: load 2s;
-  color: var(--loading-color);
-  content: attr(data-text);
-  overflow: hidden;
-  position: absolute;
-  width: 0;
 }
 
 /* Support Fire-API by adding this on your website */

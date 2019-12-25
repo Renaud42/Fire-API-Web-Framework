@@ -152,6 +152,14 @@ const Messages = {
    */
   CANT_GET_SERVER_INFORMATION_EXCEPTION: "Can't get server information.",
   /**
+   * Message returned when negative percentage is specified
+   */
+  NEGATIVE_PERCENTAGE_EXCEPTION: "Value is a negative percentage.",
+  /**
+   * Message returned when too big percentage is specified
+   */
+  OVER_100_PERCENTAGE_EXCEPTION: "Value is > 100% (> 1).",
+  /**
    * Message returned when unknown server name is specified
    */
   UNKNOWN_SERVER_EXCEPTION: "Unknown server name.",
@@ -718,10 +726,75 @@ window.onclick = function(event) {
   }
 }
 
+/* Modals */
+/**
+ * Opens a modal box
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} modalId Modal ID (class .modal)
+ */
+function openModal(modalId) {
+  document.getElementById(modalId).style.opacity = "1";
+  document.getElementById(modalId).style.display = "block";   // Show modal
+}
+/**
+ * Closes a modal box
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} modalId Modal ID (class .modal)
+ */
+function closeModal(modalId) {
+  document.getElementById(modalId).style.opacity = "0";
+  setTimeout(function() {
+    // Then waiting animation time to vanish
+    document.getElementById(modalId).style.display = "none";
+  }, 300);
+}
+
+/* Progress bars */
+/**
+ * Get progress bar value
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} progressId Progress bar ID (class .modal)
+ */
+function getProgressValue(progressId) {
+  // Value returned as a percentage [0;1]
+  return parseInt(document.getElementById(progressId).getElementsByTagName('div')[0].style.width, 10) / 100;
+}
+/**
+ * Get progress bar value
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {string} progressId Progress bar ID (class .modal)
+ * @param {float} value Progress bar value as a percentage [0;1] (class .modal)
+ * @throws {Error} Throws if value is not in bounds
+ */
+function setProgressValue(progressId, value) {
+  if (value > 1) throw new Error(Messages.OVER_100_PERCENTAGE_EXCEPTION);
+  else if (value < 0) throw new Error(Messages.NEGATIVE_PERCENTAGE_EXCEPTION);
+  else {
+    try {
+      // Set to the new percentage
+      document.getElementById(progressId).getElementsByTagName('div')[0].style.width = (value * 100) + "%";
+    } catch (err) {
+      throw new Error("An error has occured :\n" + err);
+    }
+  }
+}
+
 /* Sliders handler */
 /* Warning : only 1 slider per page */
 var slideIndex = 1;
-showSlides(slideIndex);
+if (document.getElementsByClassName("slider-item") !== null) showSlides(slideIndex);
 function plusSlides(n) {
   showSlides(slideIndex += n);
 }
