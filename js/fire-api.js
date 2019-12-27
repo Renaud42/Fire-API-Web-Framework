@@ -160,6 +160,10 @@ const Messages = {
    */
   OVER_100_PERCENTAGE_EXCEPTION: "Value is > 100% (> 1).",
   /**
+   * Message returned when slider captions and images arrays haven't same length
+   */
+  SLIDER_CAPTIONS_AND_IMAGES_ARRAYS_NOT_SAME_LENGTH_EXCEPTION: "Captions and images arrays need to be same length.",
+  /**
    * Message returned when unknown server name is specified
    */
   UNKNOWN_SERVER_EXCEPTION: "Unknown server name.",
@@ -794,13 +798,47 @@ function setProgressValue(progressId, value) {
 /* Sliders handler */
 /* Warning : only 1 slider per page */
 var slideIndex = 1;
-if (document.getElementsByClassName("slider-item") !== null) showSlides(slideIndex);
+/**
+ * Call this function to initialize slider
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ */
+function initializeSlider() {
+  if (document.getElementsByClassName("slider-item") !== null) showSlides(slideIndex);
+}
+initializeSlider(); // Initializing slider at script invoke
+/**
+ * Call this function to go n next page
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {int} n n Next pages
+ */
 function plusSlides(n) {
   showSlides(slideIndex += n);
 }
+/**
+ * Set current slide to n
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {int} n n page
+ */
 function currentSlide(n) {
   showSlides(slideIndex = n);
 }
+/**
+ * Show slide
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.0
+ * @param {int} n n page
+ */
 function showSlides(n) {
   let i;
   let slides = document.getElementsByClassName("slider-item");
@@ -1253,15 +1291,872 @@ function preformattedCodeAutoWidth(elementId) {
   document.getElementById(elementId).style.width = (parseInt(window.getComputedStyle(document.getElementById(elementId).getElementsByClassName("code-container")[0], null).width.replace(/px/, "")) + 20) + "px";
 }
 /**
- * Image cursor following text animation
+ * Image Cursor Following Text animation
  *
  * @author Renaud
  * @version 1.1
  * @since 1.0
- * @param {object} element Element ID or element to apply syntaxic coloration on
+ * @param {object} element Element to apply Image Cursor Following Text on
  * @param {object} e Event (need to map function to window.onmousemove)
- * @param {float} mode "html", "css" or "js"
+ * @param {int} sensivity Moving sensivity (default = 1)
  */
 function icfr(element, e, sensivity = 1) {
   element.style.backgroundPosition = ((4 * e.clientX) / (570 / sensivity)) + 40 + "%" + ((4 * e.clientY) / (570 / sensivity)) + 50 + "%";
+}
+
+
+// -------------------------------------------
+// FIRE-API WEB-FRAMEWORK COMPONENTS BUILDERS
+// -------------------------------------------
+
+/* UTILS */
+/**
+ * Removes any Fire-API Web-Framework element (without animation)
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID
+ */
+function removeElement(elementId) {
+  let element = document.getElementById(elementId);
+  element.remove();
+}
+
+/* COLOR THEMES */
+/**
+ * Set color theme for a component
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to apply mask on
+ * @param {string} colorThemeName Theme class name
+ * @param {boolean} secondary Use secondary color scheme instead of primary (default = false)
+ */
+function setColorTheme(elementId, colorThemeName, secondary = false) {
+  // Removing color types class
+  if (document.getElementById(elementId).classList.contains("primary")) document.getElementById(elementId).classList.remove("primary");
+  if (document.getElementById(elementId).classList.contains("secondary")) document.getElementById(elementId).classList.remove("secondary");
+
+  // Removing all classes that can be a theme
+  let classList = document.getElementById(elementId).classList
+  for (let i = 0; i < classList.length; i++) if (classList[i].startsWith("light-") || classList[i].startsWith("dark-") || classList[i].startsWith("theme-")) document.getElementById(elementId).classList.remove(classList[i]);
+
+  // Setting color type
+  if (secondary) document.getElementById(elementId).classList = "secondary " + document.getElementById(elementId).classList;
+  else document.getElementById(elementId).classList = "primary " + document.getElementById(elementId).classList;
+
+  // Setting color theme
+  document.getElementById(elementId).classList = colorThemeName + " " + document.getElementById(elementId).classList;
+}
+
+/* MASKS */
+/**
+ * Masks classes constant
+ */
+const Masks = {
+  ROUND: "round",
+  SQUARE_ROUND: "square-round",
+  SQUARE_ROUNDED: "square-rounded",
+  CIRCLE_SQUARE_DOWN: "circle-square-down",
+  CIRCLE_SQUARE_LEFT: "circle-square-left",
+  CIRCLE_SQUARE_RIGHT: "circle-square-right",
+  CIRCLE_SQUARE_UP: "circle-square-up",
+  ROUNDED_ARROW_TOP_LEFT: "rounded-arrow-top-left",
+  ROUNDED_ARROW_TOP_RIGHT: "rounded-arrow-top-right",
+  ROUNDED_ARROW_BOTTOM_LEFT: "rounded-arrow-bottom-left",
+  ROUNDED_ARROW_BOTTOM_RIGHT: "rounded-arrow-bottom-right"
+}
+/**
+ * Apply mask component to an HTML element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to apply mask on
+ * @param {string} mask Masks value to apply (e.g Masks.MASK_NAME)
+ */
+function applyMask(elementId, mask) {
+  if (!document.getElementById(elementId).classList.contains("mask-" + mask)) document.getElementById(elementId).classList.add("mask-" + mask);
+}
+/**
+ * Remove mask component to an HTML element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to remove mask on
+ * @param {string} mask Masks value to remove (e.g Masks.MASK_NAME)
+ */
+function removeMask(elementId, mask) {
+  if (document.getElementById(elementId).classList.contains("mask-" + mask)) document.getElementById(elementId).classList.remove("mask-" + mask);
+}
+/**
+ * Toggle mask component to an HTML element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to toggle mask on
+ * @param {string} mask Masks value to toggle (e.g Masks.MASK_NAME)
+ */
+function toggleMask(elementId, mask) {
+  document.getElementById(elementId).classList.toggle("mask-" + mask);
+}
+
+/* SHADOWS */
+const ShadowColor = {
+  BLACK: "black",
+  BLUE: "blue",
+  GREEN: "green",
+  RED: "red",
+  YELLOW: "yellow",
+  PURPLE: "purple",
+  WHITE: "white",
+  EXTRA_FIRE: "fire",
+  EXTRA_3D: "3d",
+  EXTRA_ANAGLYPHIC: "anaglyphic",     // NOTE : only works for text shadow
+  EXTRA_VINTAGE: "vintage"            // NOTE : only works for text shadow
+}
+const ShadowType = {
+  SMALL: "small",
+  REGULAR: "regular",
+  LARGE: "large",
+  EXTRA: "extra"  // NOTE : needed to use ShadowColor that starts with "EXTRA_"
+}
+/**
+ * Set shadow of an element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to set shadow on
+ * @param {string} shadowColor Shadow color
+ * @param {string} shadowType Shadow type
+ */
+function setShadow(elementId, shadowColor, shadowType) {
+  // Concat to create shadow class string
+  let shadowClass = shadowType + "-shadow-" + shadowColor;
+
+  removeShadow(elementId);  // Remove all shadows
+
+  document.getElementById(elementId).classList.add(shadowClass);
+}
+/**
+ * Remove shadow class(es) of an element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to remove shadow on
+ */
+function removeShadow(elementId) {
+  let classList = document.getElementById(elementId).classList;
+
+  // Removing all corresponding classes
+  for (let i = 0; i < classList.length; i++)
+    if (classList[i].includes("-shadow-"))
+      document.getElementById(elementId).classList.remove(classList[i]);
+}
+/**
+ * Set text shadow of an element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to set text shadow on
+ * @param {string} shadowColor Shadow color
+ */
+function setTextShadow(elementId, shadowColor) {
+  // Concat to create shadow class string
+  let shadowClass = "text-shadow-" + ((shadowColor == ShadowColor.EXTRA_FIRE || shadowColor == ShadowColor.EXTRA_3D || shadowColor == ShadowColor.EXTRA_ANAGLYPHIC || shadowColor == ShadowColor.EXTRA_VINTAGE) ? ("extra-" + shadowColor) : shadowColor);
+
+  removeTextShadow(elementId);  // Remove all shadows
+
+  document.getElementById(elementId).classList.add(shadowClass);
+}
+/**
+ * Remove text shadow class(es) of an element
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Element ID to remove text shadow on
+ */
+function removeTextShadow(elementId) {
+  let classList = document.getElementById(elementId).classList;
+
+  // Removing all corresponding classes
+  for (let i = 0; i < classList.length; i++)
+    if (classList[i].startsWith("text-shadow-"))
+      document.getElementById(elementId).classList.remove(classList[i]);
+}
+
+/* ALERT BOXES */
+/**
+ * Creates an alert box
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where alert will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} title Alert title
+ * @param {string} message Alert message
+ * @param {boolean} closable Is alert closable ? (default = true)
+ * @param {boolean} animated Is alert animated ? (class "animated-alert", default = true)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {boolean} alertCloseAnimated Is alert close "&times;" animated ? (class "animated-alert-close", default = true)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Alert box main div element
+ */
+function createAlertBox(element, themeClass, title, message, closable = true, animated = true, secondary = false, alertCloseAnimated = true, id = "") {
+  // Preparing classes for alert container (div)
+  let alertContainerClasses = [];
+  alertContainerClasses.push(themeClass);
+  alertContainerClasses.push(secondary ? "secondary" : "primary");
+  alertContainerClasses.push("alert");
+  if (animated) alertContainerClasses.push("animated-alert");
+
+  // Creating main container div
+  let containerDiv = document.createElement("div");
+  containerDiv.classList = alertContainerClasses.join(" ");
+  element.appendChild(containerDiv);
+
+  // Creating title span
+  let titleSpan = document.createElement("span");
+  titleSpan.classList.add("alert-title");
+  titleSpan.innerHTML = "&nbsp;" + title;
+
+  // If closable create closable span
+  if (closable) {
+    let alertCloseSpan = document.createElement("span");
+    alertCloseSpan.classList.add("alert-close");
+    if (animated) alertCloseSpan.classList.add("animated-alert-close");
+    alertCloseSpan.innerHTML = "&times;";
+    containerDiv.appendChild(alertCloseSpan);
+  }
+
+  containerDiv.appendChild(titleSpan);  // Adding title span in alert
+  containerDiv.innerHTML += message;    // Adding message in alert
+
+  if (id != "") containerDiv.id = id;  // Set id if is set in param
+
+  return containerDiv;
+}
+/**
+ * Removes an alert box (not just close it)
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Alert box main container div ID
+ */
+function removeAlertBox(elementId) {
+  let containerDiv = document.getElementById(elementId);
+  containerDiv.style.opacity = "0";            // Setting opacity to 0
+
+  setTimeout(function() {
+    containerDiv.remove();                     // Then waiting animation time to vanish
+  }, 300);
+}
+
+/* BADGES */
+/**
+ * Creates a badge
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where badge will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} content Badge content
+ * @param {boolean} animated Is badge appearing animated ? (default = true)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Badge element
+ */
+function createBadge(element, themeClass, content, animated = true, secondary = false, id = "") {
+  let badgeSpan = document.createElement("span"); // Creating badge span
+  badgeSpan.classList.add(themeClass);
+  badgeSpan.classList.add(secondary ? "secondary" : "primary");
+  if (animated) badgeSpan.style.opacity = "0";
+  badgeSpan.classList.add("badge");
+  badgeSpan.innerHTML = content;
+  if (id != "") badgeSpan.id = id;
+
+  element.appendChild(badgeSpan);
+
+  if (animated) setTimeout(function() {
+    badgeSpan.style.opacity = "1";    // Delaying opacity change if animated
+  }, 10);
+
+  return badgeSpan;
+}
+/**
+ * Removes a badge
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Badge main container span ID
+ * @param {boolean} animated Is badge disappearing animated ? (default = true)
+ */
+function removeBadge(elementId, animated = true) {
+  let containerSpan = document.getElementById(elementId);
+  containerSpan.style.opacity = "0";            // Setting opacity to 0
+
+  setTimeout(function() {
+    containerSpan.remove();                     // Then waiting animation time to vanish
+  }, animated ? 200 : 0);
+}
+
+/* BUTTONS & DROPDOWNS */
+/**
+ * Creates a button
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where button will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} content Button content
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @param {string} url Optional URL to browse (leave "" for no URL)
+ * @param {boolean} newTab Open optional URL in a new browser tab (default = false)
+ * @return {object} Button element
+ */
+function createButton(element, themeClass, content, secondary = false, id = "", url = "", newTab = false) {
+  let button = document.createElement("button");    // Creating button
+  button.classList.add(themeClass);
+  button.classList.add(secondary ? "secondary" : "primary");
+  button.classList.add("button");
+  if (id != "") button.id = id;
+  if (url != "") button.setAttribute('onclick', newTab ? ('window.open("' + url + '");') : ('window.location.href = "' + url + '";'));
+  button.innerHTML = content;
+
+  element.appendChild(button);
+
+  return button;
+}
+/**
+ * Creates a dropdown
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where dropdown will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} titleContent Dropdown title content
+ * @param {string} contentId Dropdown content id
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @param {boolean} arrow Add an arrow at end of dropdown title (default = true)
+ * @return {object} Dropdown element
+ */
+function createDropdown(element, themeClass, titleContent, contentId, secondary = false, id = "", arrow = true) {
+  // Creating dropdown div element
+  let dropdownDiv = document.createElement("div");
+  dropdownDiv.classList.add("dropdown");
+  if (id != "") dropdownDiv.id = id;
+
+  // Creating dropdown button element
+  let dropdownButton = createButton(dropdownDiv, themeClass, titleContent + (arrow ? " ▼" : ""), secondary, (id != "") ? (id + "-button") : "");
+  dropdownButton.classList.add("dropdown-button");
+  dropdownButton.setAttribute('onclick', 'dropdown("' + contentId + '");');
+
+  element.appendChild(dropdownDiv);                 // Add dropdown in element
+
+  return dropdownDiv;
+}
+/**
+ * Removes a button / dropdown
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Button / Dropdown ID
+ */
+function removeButtonDropdown(elementId) {
+  removeElement(elementId);
+}
+
+/* HYPERTEXT LINKS */
+/**
+ * Creates a hypertext link
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where hypertext will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} content Content
+ * @param {string} url Optional URL to browse (leave "" for no URL)
+ * @param {boolean} newTab Open optional URL in a new browser tab (default = false)
+ * @param {boolean} thin Thin hypertext link (hypertext-thin class) (default = false)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Hypertext element
+ */
+function createHypertext(element, themeClass, content, url = "", newTab = false, thin = false, secondary = false, id = "") {
+  // Creating hypertext anchor element
+  let aElement = document.createElement("a");
+  aElement.classList.add(themeClass);
+  aElement.classList.add(secondary ? "secondary" : "primary");
+  aElement.classList.add("hypertext" + (thin ? "-thin" : ""));
+  if (id != "") aElement.id = id;
+  if (url != "") aElement.setAttribute('href', url);
+  if (newTab) aElement.setAttribute('target', '_blank');
+  aElement.innerHTML = content;
+
+  element.appendChild(aElement);
+}
+/**
+ * Removes a hypertext link
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Hypertext ID
+ */
+function removeHypertext(elementId) {
+  removeElement(elementId);
+}
+
+/* SLIDERS */
+/**
+ * Creates a slider
+ * WARNING : you can create only one slider per page
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where slider will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {array} images Array of image URLs
+ * @param {array} captions Array of caption texts
+ * @param {boolean} animated Is slider animated (default = true)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Slider element
+ */
+function createSlider(element, themeClass, images, captions, animated = true, secondary = false, id = "") {
+  // Image and captions length needs to be equals
+  if (images.length === captions.length) {
+    // Creating div container that packs slider and slider dots
+    let containerDiv = document.createElement("div");
+    containerDiv.classList.add(themeClass);
+    containerDiv.classList.add(secondary ? "secondary" : "primary");
+    containerDiv.classList.add("slider-container");
+    if (id != "") containerDiv.id = id;
+
+    // Creating slider div that packs slider items and control arrows
+    let sliderDiv = document.createElement("div");
+    sliderDiv.classList.add("slider");
+    if (id != "") sliderDiv.id = id + "-slider";
+
+    // Adding all slider items
+    for (let i = 0; i < images.length; i++) sliderDiv.appendChild(createSliderItem(images[i], captions[i], animated));
+
+    // Creating slider previous button
+    let previousButton = document.createElement("a");
+    previousButton.classList.add("slider-previous");
+    previousButton.classList.add("slider-buttons-animated");
+    previousButton.setAttribute('onclick', 'plusSlides(-1)');
+    previousButton.innerHTML = "&#10094;"
+
+    // Creating slider next button
+    let nextButton = document.createElement("a");
+    nextButton.classList.add("slider-next");
+    nextButton.classList.add("slider-buttons-animated");
+    nextButton.setAttribute('onclick', 'plusSlides(1)');
+    nextButton.innerHTML = "&#10095;"
+
+    // Adding previous and next buttons
+    sliderDiv.appendChild(previousButton);
+    sliderDiv.appendChild(nextButton);
+
+    // Adding slider to container div
+    containerDiv.appendChild(sliderDiv);
+
+    // Adding line break
+    containerDiv.appendChild(document.createElement("br"));
+
+    // Creating slider dots div
+    let sliderDotsDiv = document.createElement("div");
+    sliderDotsDiv.classList.add("slider-dots");
+
+    for (let i = 1; i <= images.length; i++) {
+      let sliderDot = document.createElement("span");
+      sliderDot.classList.add("slider-dot");
+      sliderDot.setAttribute('onclick', 'currentSlide(' + i + ')');
+      sliderDotsDiv.appendChild(sliderDot); // Adding slider dot
+    }
+
+    // Adding slider dots div
+    containerDiv.appendChild(sliderDotsDiv)
+
+    // Adding container div to element
+    element.appendChild(containerDiv);
+
+    return containerDiv;
+  } else throw new Error(Messages.SLIDER_CAPTIONS_AND_IMAGES_ARRAYS_NOT_SAME_LENGTH_EXCEPTION);
+}
+/**
+ * Creates a slider item
+ *
+ * @param {string} image Image URL
+ * @param {string} caption Caption text
+ * @param {boolean} animated Is slider item animated
+ */
+function createSliderItem(image, caption, animated) {
+  // Creating slider item div container that packs image and caption
+  let sliderItemDiv = document.createElement("div");
+  sliderItemDiv.classList.add("slider-item");
+  if (animated) sliderItemDiv.classList.add("slider-animated");
+
+  // Creating slider image
+  let sliderImage = document.createElement("img");
+  sliderImage.setAttribute('src', image);
+
+  // Creating slider caption div
+  let sliderCaptionDiv = document.createElement("div");
+  sliderCaptionDiv.classList.add("slider-caption");
+  sliderCaptionDiv.innerHTML = caption;
+
+  sliderItemDiv.appendChild(sliderImage);       // Adding slider image
+  sliderItemDiv.appendChild(sliderCaptionDiv);  // Adding slider caption
+
+  return sliderItemDiv;
+}
+
+/* INPUTS */
+/**
+ * Types of input
+ */
+const InputType = {
+  TEXT: "text",
+  PASSWORD: "password",
+  DATE: "date",
+  DATETIME_LOCAL: "datetime-local",
+  EMAIL: "email",
+  FILE: "file",
+  MONTH: "month",
+  NUMBER: "number",
+  SEARCH: "search",
+  TEL: "tel",
+  TIME: "time",
+  URL: "url",
+  WEEK: "week"
+}
+/**
+ * Creates an input field
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where input will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} inputType Type of input (use const InputType e.g InputType.PASSWORD)
+ * @param {string} placeholder Input placeholder (leave "" for no placeholder)
+ * @param {string} name Input name (leave "" for no name)
+ * @param {string} value Input default value (leave "" for no default value)
+ * @param {boolean} spellcheck Is spell check enabled on this field
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Input element
+ */
+function createInput(element, themeClass, inputType, placeholder = "", name = "", value = "", spellcheck = true, secondary = false, id = "") {
+  // Creating input
+  let input = document.createElement("input");
+  input.classList.add(themeClass);
+  input.classList.add(secondary ? "secondary" : "primary");
+  input.classList.add(inputType + "-input");
+  if (id != "") input.id = id;
+  if (placeholder != "") input.setAttribute('placeholder', placeholder);
+  if (name != "") input.setAttribute('name', name);
+  if (value != "") input.setAttribute('value', value);
+  if (spellcheck) input.setAttribute('spellcheck', 'true');
+  else input.setAttribute('spellcheck', 'false');
+  input.setAttribute('type', inputType);
+
+  // Adding input
+  element.appendChild(input);
+
+  return input;
+}
+/**
+ * Creates a radio input
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where radio input will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} text Input text
+ * @param {string} name Input name
+ * @param {boolean} checked Is input default checked (default = false)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @param {boolean} radio Internal (leave default (= true) if you don't know)
+ * @return {object} Input element
+ */
+function createRadioInput(element, themeClass, text, name, checked = false, secondary = false, id = "", radio = true) {
+  // Defines if input is radio or checkbox
+  let radioOrCheckbox = radio ? "radio" : "checkbox";
+
+  // Creating label
+  let containerLabel = document.createElement("label");
+  containerLabel.classList.add(themeClass);
+  containerLabel.classList.add(secondary ? "secondary" : "primary");
+  containerLabel.classList.add(radioOrCheckbox + "-container");
+  if (id != "") containerLabel.id = id;
+  containerLabel.innerHTML = text;
+
+  // Creating input
+  let input = document.createElement("input");
+  input.setAttribute('type', radioOrCheckbox);
+  input.setAttribute('name', name);
+  if (checked) input.setAttribute('checked', 'checked');
+
+  let inputSpan = document.createElement("span");
+  inputSpan.classList.add(radioOrCheckbox + "-input");
+
+  // Adding input and inputSpan
+  containerLabel.appendChild(input);
+  containerLabel.appendChild(inputSpan);
+
+  element.appendChild(containerLabel);
+
+  return containerLabel;
+}
+/**
+ * Creates a checkbox input
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where hypertext will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} text Input text
+ * @param {string} name Input name
+ * @param {boolean} checked Is input default checked (default = false)
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Optional id (leave "" for no id)
+ * @return {object} Input element
+ */
+function createCheckboxInput(element, themeClass, text, name, checked = false, secondary = false, id = "") {
+  return createRadioInput(element, themeClass, text, name, checked, secondary, id, false);
+}
+/**
+ * Removes an input
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Input ID
+ */
+function removeInput(elementId) {
+  removeElement(elementId);
+}
+
+/* MODALS */
+/**
+ * Creates a modal box
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where modal box will be created in
+ * @param {string} headerThemeClass Theme class (e.g "dark-red") of modal header
+ * @param {string} bodyThemeClass Theme class (e.g "dark-red") of modal body
+ * @param {string} footerThemeClass Theme class (e.g "dark-red") of modal footer
+ * @param {object} headerElement Header content as an element
+ * @param {object} bodyElement Body content as an element
+ * @param {object} footerElement Footer content as an element
+ * @param {string} id Optional id (leave "" for no id)
+ * @param {boolean} closable Defines if modal is closable (default = true)
+ * @param {boolean} animated Defines if modal is animated (default = true)
+ * @param {boolean} animatedModalCloseButton Defines if modal close button is animated (default = true)
+ * @param {boolean} headerSecondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false) for modal header
+ * @param {boolean} bodySecondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false) for modal body
+ * @param {boolean} footerSecondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false) for modal footer
+ * @param {boolean} useStringsInsteadOfElements Use string instead of elements for modal elements (default = false)
+ * @return {object} Modal element
+ */
+function createModal(element, headerThemeClass, bodyThemeClass, footerThemeClass, headerElement, bodyElement, footerElement, id, closable = true, animated = true, animatedModalCloseButton = true, headerSecondary = false, bodySecondary = false, footerSecondary = false, useStringsInsteadOfElements = false) {
+  // Creating modal container
+  let modal = document.createElement("div");
+  modal.classList.add("modal");
+  modal.id = id;
+
+  // Creating modal content container
+  let modalContent = document.createElement("div");
+  modalContent.classList.add("modal-content");
+  if (animated) modalContent.classList.add("animated-modal");
+
+  // Creating modal header
+  let modalHeader = document.createElement("div");
+  modalHeader.classList.add(headerThemeClass);
+  modalHeader.classList.add(headerSecondary ? "secondary" : "primary");
+  modalHeader.classList.add("modal-header");
+  // If closable adding a close button
+  if (closable) {
+    // Creating modal close button
+    let closeButtonSpan = document.createElement("span");
+    closeButtonSpan.classList.add("modal-close");
+    if (animatedModalCloseButton) closeButtonSpan.classList.add("animated-modal-close");
+    closeButtonSpan.setAttribute('onclick', 'closeModal(\'' + id + '\')');
+    closeButtonSpan.innerHTML = "&times;";
+
+    modalHeader.appendChild(closeButtonSpan);
+  }
+
+  // Creating modal body
+  let modalBody = document.createElement("div");
+  modalBody.classList.add(bodyThemeClass);
+  modalBody.classList.add(bodySecondary ? "secondary" : "primary");
+  modalBody.classList.add("modal-body");
+
+  // Creating modal footer
+  let modalFooter = document.createElement("div");
+  modalFooter.classList.add(footerThemeClass);
+  modalFooter.classList.add(footerSecondary ? "secondary" : "primary");
+  modalFooter.classList.add("modal-footer");
+
+  // Adding modal contents
+  if (useStringsInsteadOfElements) {
+    // Adding header content in modal header
+    modalHeader.innerHTML += headerElement;
+    // Adding body content in modal body
+    modalBody.innerHTML += bodyElement;
+    // Adding footer content in modal footer
+    modalFooter.innerHTML += footerElement;
+  } else {
+    // Adding header content in modal header
+    modalHeader.appendChild(headerElement);
+    // Adding body content in modal body
+    modalBody.appendChild(bodyElement);
+    // Adding footer content in modal footer
+    modalFooter.appendChild(footerElement);
+  }
+
+  // Adding modal parts into modal content
+  modalContent.appendChild(modalHeader);
+  modalContent.appendChild(modalBody);
+  modalContent.appendChild(modalFooter);
+
+  // Adding modal content to modal container
+  modal.appendChild(modalContent);
+
+  element.appendChild(modal);
+
+  return modal;
+}
+/**
+ * Removes a modal box
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Modal container ID
+ */
+function removeModal(elementId) {
+  removeElement(elementId);
+}
+
+/* PROGRESS BARS */
+/**
+ * Creates a progress bar
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element where progress bar will be created in
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} backgroundThemeClass Background theme class (e.g "light-red")
+ * @param {string} id Progress ID (needed)
+ * @param {boolean} animated Is progress bar animated
+ * @param {float} percentage Percentage in [0;1] that represents progress of progress bar
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {boolean} backgroundSecondary Use secondary color theme for progress background (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @return {object} Progress bar element
+ */
+function createProgressBar(element, themeClass, backgroundThemeClass, id, animated = true, percentage = .0, secondary = false, backgroundSecondary = false) {
+  // Creating progress container
+  let progress = document.createElement("div");
+  progress.classList.add(backgroundThemeClass);
+  progress.classList.add(backgroundSecondary ? "secondary" : "primary");
+  progress.classList.add("progress");
+  progress.id = id;
+
+  // Creating progress bar
+  let progressBar = document.createElement("div");
+  progressBar.classList.add(themeClass);
+  progressBar.classList.add(secondary ? "secondary" : "primary");
+  progressBar.classList.add("progressbar");
+  progressBar.style.width = animated ? "0%" : (percentage * 100) + "%";
+
+  // Adding progress bar to progress container
+  progress.appendChild(progressBar);
+
+  element.appendChild(progress);
+
+  // Setting progress bar value to specified percentage with a delay to be sure
+  // progress bar is created
+  if (animated) setTimeout(function() {
+    setProgressValue(id, percentage);
+  }, 50);
+
+  return progress;
+}
+/**
+ * Removes a progress bar
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} elementId Progress bar container ID
+ */
+function removeProgressBar(elementId) {
+  removeElement(elementId);
+}
+
+/* TOOLTIPS */
+/**
+ * Creates a tooltip
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {object} element Element which triggers tooltip on hover
+ * @param {string} themeClass Theme class (e.g "dark-red")
+ * @param {string} content Tooltip content
+ * @param {boolean} secondary Use secondary color theme (e.g "dark-red secondary") instead of primary color theme (e.g "dark-red primary") (default = false)
+ * @param {string} id Tooltip ID
+ * @return {object} Tooltip element
+ */
+function createTooltip(element, themeClass, content, secondary, id) {
+  // Creating tooltip div
+  let tooltipDiv = document.createElement("div");
+  tooltipDiv.classList.add("tooltip");
+  if (id != "") tooltipDiv.id = id;
+
+  // Creating tooltip content span
+  let tooltipContentSpan = document.createElement("span");
+  tooltipContentSpan.classList.add(themeClass);
+  tooltipContentSpan.classList.add(secondary ? "secondary" : "primary");
+  tooltipContentSpan.classList.add("tooltip-content")
+  tooltipContentSpan.innerHTML = content;
+
+  // Wrapping element into tooltip div
+  element.parentNode.insertBefore(tooltipDiv, element);
+  tooltipDiv.appendChild(element);
+
+  // Adding tooltip content
+  tooltipDiv.appendChild(tooltipContentSpan);
+
+  return tooltipDiv;
 }

@@ -564,6 +564,7 @@ pre * {
   --primary-bg-active-color: #ffa000;
   --primary-font-hover-color: black;
   --primary-font-active-color: black;
+  --primary-alert-close: black;
   /* Secondary colors */
   --secondary-bg-color: #fdcb6e;
   --secondary-font-color: black;
@@ -573,6 +574,7 @@ pre * {
   --secondary-bg-active-color: #fcb93c;
   --secondary-font-hover-color: black;
   --secondary-font-active-color: black;
+  --secondary-alert-close: black;
 }
 .dark-purple {
   /* Primary colors */
@@ -604,10 +606,10 @@ pre * {
 }
 
 /* Alert close */
-.primary .alert-close, .primary .modal-close {
+.primary.alert-close, .primary.modal-close {
   color: var(--primary-alert-close);
 }
-.secondary .alert-close, .secondary .modal-close {
+.secondary.alert-close, .secondary.modal-close {
   color: var(--secondary-alert-close);
 }
 
@@ -643,6 +645,7 @@ pre * {
   color: var(--secondary-font-active-color);
 }
 
+/* Navbars */
 .primary.navbar-horizontal, .primary.navbar-vertical {
   background: var(--primary-input-bg-color);
   color: var(--primary-input-font-color);
@@ -653,7 +656,7 @@ pre * {
 }
 
 /* Fix for text commonly used HTML tags */
-h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-"], h5[class^="light-"], h6[class^="light-"], a[class^="light-"], b[class^="light-"], i[class^="light-"], p[class^="light-"], small[class^="light-"], h1[class^="dark-"], h2[class^="dark-"], h3[class^="dark-"], h4[class^="dark-"], h5[class^="dark-"], h6[class^="dark-"], a[class^="dark-"], b[class^="dark-"], i[class^="dark-"], p[class^="dark-"], small[class^="dark-"], [class^="light-"].checkbox-container, [class^="light-"].checkbox-input, [class^="light-"].radio-container, [class^="light-"].radio-input {
+h1[class^="light-"], h2[class^="light-"], h3[class^="light-"], h4[class^="light-"], h5[class^="light-"], h6[class^="light-"], a[class^="light-"], b[class^="light-"], i[class^="light-"], p[class^="light-"], small[class^="light-"], h1[class^="dark-"], h2[class^="dark-"], h3[class^="dark-"], h4[class^="dark-"], h5[class^="dark-"], h6[class^="dark-"], a[class^="dark-"], b[class^="dark-"], i[class^="dark-"], p[class^="dark-"], small[class^="dark-"], [class^="light-"].checkbox-container, [class^="light-"].checkbox-input, [class^="light-"].radio-container, [class^="light-"].radio-input, [class^="light-"].slider-container {
   background: transparent;
 }
 
@@ -835,7 +838,7 @@ pre.dom-code.monokai-theme {
   box-shadow: 0 0px 18px 0 rgba(25, 118, 210, .5);
 }
 .regular-shadow-purple {
-  box-shadow: 0 0px 18px 0 rgba(142, 68, 173, .2);
+  box-shadow: 0 0px 18px 0 rgba(142, 68, 173, .5);
 }
 .regular-shadow-white {
   box-shadow: 0 0px 18px 0 rgba(255, 255, 255, .5);
@@ -856,7 +859,7 @@ pre.dom-code.monokai-theme {
   box-shadow: 0 0px 32px 0 rgba(25, 118, 210, .8);
 }
 .large-shadow-purple {
-  box-shadow: 0 0px 32px 0 rgba(142, 68, 173, .2);
+  box-shadow: 0 0px 32px 0 rgba(142, 68, 173, .8);
 }
 .large-shadow-white {
   box-shadow: 0 0px 32px 0 rgba(255, 255, 255, .8);
@@ -865,25 +868,28 @@ pre.dom-code.monokai-theme {
   box-shadow: 0 0 1px gray, 0 0px 0px #ffff33, 2px -8px 6px #ffdd33, -2px -16px 10px #ff8800;
 }
 .extra-shadow-3d {
-  text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, .1), 0 0 5px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .3), 0 3px 5px rgba(0, 0, 0, .2), 0 5px 10px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .2), 0 20px 20px rgba(0, 0, 0, .15);
+  box-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, .1), 0 0 5px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .3), 0 3px 5px rgba(0, 0, 0, .2), 0 5px 10px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .2), 0 20px 20px rgba(0, 0, 0, .15);
 }
 .text-shadow-black {
-  text-shadow: 0 0px 10px 0 rgba(0, 0, 0, .2);
+  text-shadow: 0 0px 10px rgba(0, 0, 0, .8);
 }
 .text-shadow-blue {
-  text-shadow: 0 0px 10px 0 rgba(25, 118, 210, .2);
+  text-shadow: 0 0px 10px rgba(25, 118, 210, .8);
 }
 .text-shadow-green {
-  text-shadow: 0 0px 10px 0 rgba(56, 142, 60, .2);
+  text-shadow: 0 0px 10px rgba(56, 142, 60, .8);
 }
 .text-shadow-red {
-  text-shadow: 0 0px 10px 0 rgba(211, 47, 47, .2);
+  text-shadow: 0 0px 10px rgba(211, 47, 47, .8);
 }
 .text-shadow-yellow {
-  text-shadow: 0 0px 10px 0 rgba(25, 118, 210, .2);
+  text-shadow: 0 0px 10px rgba(25, 118, 210, .8);
+}
+.text-shadow-purple {
+  text-shadow: 0 0px 10px rgba(142, 68, 173, .8);
 }
 .text-shadow-white {
-  text-shadow: 0 0px 10px 0 rgba(255, 255, 255, .2);
+  text-shadow: 0 0px 10px rgba(255, 255, 255, .8);
 }
 .text-shadow-extra-3d {
   text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, .1), 0 0 5px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .3), 0 3px 5px rgba(0, 0, 0, .2), 0 5px 10px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .2), 0 20px 20px rgba(0, 0, 0, .15);
@@ -959,6 +965,7 @@ pre.dom-code.monokai-theme {
   margin-bottom: 100%;
   padding: 5px;
   top: -5px;
+  transition: opacity .2s;
 }
 
 /* Buttons and dropdowns */
@@ -969,7 +976,7 @@ pre.dom-code.monokai-theme {
 .button, .dropdown {
   border: 0px;
   border-radius: 5px;
-  font-size: 120%;
+  font-size: 105%;
   margin: 8px;
   outline-color: transparent;
   padding: 5px 10px 5px 10px;
@@ -996,7 +1003,7 @@ pre.dom-code.monokai-theme {
   z-index: 9;
 }
 .dropdown-content button:first-of-type {
-  margin-top: -2px !important;
+  margin-top: -3px;
 }
 .dropdown-content button:last-of-type {
   border-radius: 0px 0px 5% 5%;
@@ -1048,16 +1055,16 @@ pre.dom-code.monokai-theme {
 }
 
 /* Sliders */
+.slider {
+  margin: auto;
+  position: relative;
+  width: 80%;
+}
 .slider-item {
   display: none
 }
 .slider-item img {
   width: 100%;
-}
-.slider {
-  margin: auto;
-  position: relative;
-  width: 80%;
 }
 .slider-previous, .slider-next {
   border-radius: 0 3px 3px 0;
