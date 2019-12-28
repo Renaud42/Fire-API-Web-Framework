@@ -565,6 +565,7 @@ pre * {
   --primary-font-hover-color: black;
   --primary-font-active-color: black;
   --primary-alert-close: black;
+  --primary-underline-color: black;
   /* Secondary colors */
   --secondary-bg-color: #fdcb6e;
   --secondary-font-color: black;
@@ -575,6 +576,7 @@ pre * {
   --secondary-font-hover-color: black;
   --secondary-font-active-color: black;
   --secondary-alert-close: black;
+  --secondary-underline-color: black;
 }
 .dark-purple {
   /* Primary colors */
