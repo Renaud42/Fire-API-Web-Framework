@@ -2160,3 +2160,17 @@ function createTooltip(element, themeClass, content, secondary, id) {
 
   return tooltipDiv;
 }
+
+/* DOM SYNTAXIC COLORATION */
+/**
+ * Format code content for DOM syntaxic coloration code container
+ *
+ * @author Renaud
+ * @version 1.1
+ * @since 1.1
+ * @param {string} code The code to format for code container
+ * @return {string} Formatted code
+ */
+function formatForDomCodeContainer(code) {
+  return code.replace(/\&amp;/g, '&amp;amp;').replace(/</g, '&amp;lt;').replace(/>/g, '&amp;gt;');
+}

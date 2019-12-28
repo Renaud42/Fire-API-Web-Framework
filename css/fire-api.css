@@ -606,6 +606,10 @@ pre * {
 [class^="dark-"].hypertext, [class^="dark-"].hypertext-thin {
   background: transparent;
 }
+/* Placeholders in input boxes */
+[class^="light-"][class$="-input"]::placeholder {
+  color: lightgray;
+}
 
 /* Alert close */
 .primary.alert-close, .primary.modal-close {
