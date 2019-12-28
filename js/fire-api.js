@@ -806,7 +806,7 @@ var slideIndex = 1;
  * @since 1.1
  */
 function initializeSlider() {
-  if (document.getElementsByClassName("slider-item") !== null) showSlides(slideIndex);
+  if (document.getElementsByClassName("slider-item") !== null && document.getElementsByClassName("slider-item").length > 0) showSlides(slideIndex);
 }
 initializeSlider(); // Initializing slider at script invoke
 /**
