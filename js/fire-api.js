@@ -156,6 +156,10 @@ const Messages = {
    */
   NEGATIVE_PERCENTAGE_EXCEPTION: "Value is a negative percentage.",
   /**
+   * Message returned when can't connect to network
+   */
+  NETWORK_UNREACHABLE_EXCEPTION: "Network unreachable.",
+  /**
    * Message returned when too big percentage is specified
    */
   OVER_100_PERCENTAGE_EXCEPTION: "Value is > 100% (> 1).",
@@ -331,8 +335,8 @@ class API {
   // Functions
   /**
    * Returns a specified information of the specified server
-   * (performance tip : run this in an asynchronous function)
    *
+   * @deprectated Use getServerInformationAsync()
 	 * @return {object} Information needed
 	 * @throw {Error} Thrown when can't get server information or when unknown ServerName/ServerInfoType is specified
    */
@@ -345,7 +349,7 @@ class API {
     if (ping || (!ping && !this.refreshfile && this.cachedcontent != "")) {
       if ((!this.refreshfile && this.cachedcontent == "") || this.refreshfile) {
         // Creating synchronous Cross-Origin Resource Sharing request
-        let request = createCORSRequest("GET", this.getServerStatusURL, false);
+        let request = createCORSRequest("GET", getServerStatusJsonURL(this.name), false);
 
         // If request is ready and status is 200 (OK) and content type
         // compatible then set cache to request response raw text
@@ -447,37 +451,82 @@ class API {
       }
     }
   }
-  /**
-	 * Get status URL corresponding to a server name
-   *
-	 * @return {string} Status server URL
-	 * @throw {Error} Thrown when an unknown server is specified
-	 */
-  get getServerStatusURL() {
-    switch (this.name) {
-      case ServerName.FIRE_SOFTWARES:
-        return Server.STATUS_0;
-      case ServerName.FIRE_NETWORK:
-        return Server.STATUS_1;
-      case ServerName.MUMBLE:
-        return Server.STATUS_2;
-      case ServerName.API_STATUS:
-        return Server.STATUS_API;
-      case ServerName.DISCORD_STATUS:
-        return Server.STATUS_DISCORD;
-      case ServerName.FRAMEWORK_STATUS:
-        return Server.STATUS_FRAMEWORK;
-      case ServerName.MUMBLE_CVP:
-        return Server.STATUS_MUMBLE_CVP;
-      default:
-        throw new Error(Messages.UNKNOWN_SERVER_EXCEPTION);
-    }
-  }
 }
+
+
 
 // -------------------------------------------
 //                    UTILS
 // -------------------------------------------
+/**
+ * Get status URL corresponding to a server name
+ * JSON version
+ *
+ * @param {int} name Server name
+ * @return {string} Status server URL
+ * @throw {Error} Thrown when an unknown server is specified
+ */
+function getServerStatusJsonURL(name) {
+  switch (name) {
+    case ServerName.FIRE_SOFTWARES:
+      return Server.STATUS_0;
+    case ServerName.FIRE_NETWORK:
+      return Server.STATUS_1;
+    case ServerName.MUMBLE:
+      return Server.STATUS_2;
+    case ServerName.API_STATUS:
+      return Server.STATUS_API;
+    case ServerName.DISCORD_STATUS:
+      return Server.STATUS_DISCORD;
+    case ServerName.FRAMEWORK_STATUS:
+      return Server.STATUS_FRAMEWORK;
+    case ServerName.MUMBLE_CVP:
+      return Server.STATUS_MUMBLE_CVP;
+    default:
+      throw new Error(Messages.UNKNOWN_SERVER_EXCEPTION);
+  }
+}
+/**
+ * Get status URL corresponding to a server name
+ * Raw version
+ *
+ * @param {int} name Server name
+ * @return {string} Status server URL
+ * @throw {Error} Thrown when an unknown server is specified
+ */
+function getServerStatusRawURL(name) {
+  return "https://api.fire-softwares.ga/cors/raw.php?server=" + name + "&infotype=";
+}
+/**
+ * Returns a specified information of the specified server
+ *
+ * @param {int} name Server name
+ * @param {int} infoType Server information type needed
+ * @param {function} resultFunction Function to execute when information is received (passing param responseText)
+ * @return {object} Information needed
+ * @throw {Error} Thrown when network is unreachable
+ * @throw {Error} Thrown when can't get server information or when unknown ServerName/ServerInfoType is specified
+ */
+function getServerInformationAsync(name, infoType, resultFunction) {
+  // Defines is navigator is online
+  let ping = navigator.onLine;
+
+  // Getting required content on corresponding URL
+  if (ping) {
+    // Creating asynchronous Cross-Origin Resource Sharing request
+    let request = createCORSRequest("GET", getServerStatusRawURL(name) + infoType);
+
+    // Adding event on ready state change
+    request.onreadystatechange = function() {
+      if (request.readyState === 4 && request.status === 200) {
+        // If request is ready and status is 200 (OK) and content type
+        // compatible then set cache to request response raw text
+        if (request.getResponseHeader('Content-Type').indexOf("text") !== 1) resultFunction(request.responseText);
+        else throw new Error(Messages.CANT_GET_SERVER_INFORMATION_EXCEPTION);
+      }
+    }
+  } else throw new Error(Messages.NETWORK_UNREACHABLE_EXCEPTION);
+}
 /**
  * Creates a Cross-origin Resource Sharing request with specified method and to
  * specified URL
